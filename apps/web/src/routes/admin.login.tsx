@@ -30,30 +30,31 @@ function AdminLoginPage() {
   });
 
   return (
-    <main className="flex min-h-screen items-center justify-center px-6">
+    <main className="flex min-h-screen items-center justify-center bg-page px-6">
       <Card className="w-full max-w-sm">
-        <h1 className="mb-6 text-xl font-semibold text-slate-900 dark:text-slate-100">Admin sign in</h1>
+        <div className="mb-6 flex items-center gap-2">
+          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent text-sm font-bold text-white">
+            G
+          </span>
+          <h1 className="text-lg font-semibold text-ink">Admin sign in</h1>
+        </div>
         <form className="space-y-4" onSubmit={handleSubmit((values) => loginMutation.mutate(values))}>
           <label className="block">
-            <span className="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">
-              Email
-            </span>
+            <span className="mb-1.5 block text-sm font-medium text-ink">Email</span>
             <input className="input" type="email" {...register("email")} />
-            {errors.email && <span className="mt-1 block text-sm text-red-600">{errors.email.message}</span>}
+            {errors.email && <span className="mt-1.5 block text-sm text-critical">{errors.email.message}</span>}
           </label>
 
           <label className="block">
-            <span className="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">
-              Password
-            </span>
+            <span className="mb-1.5 block text-sm font-medium text-ink">Password</span>
             <input className="input" type="password" {...register("password")} />
             {errors.password && (
-              <span className="mt-1 block text-sm text-red-600">{errors.password.message}</span>
+              <span className="mt-1.5 block text-sm text-critical">{errors.password.message}</span>
             )}
           </label>
 
           {loginMutation.isError && (
-            <p className="text-sm text-red-600">{(loginMutation.error as Error).message}</p>
+            <p className="text-sm text-critical">{(loginMutation.error as Error).message}</p>
           )}
 
           <Button type="submit" disabled={loginMutation.isPending} className="w-full">

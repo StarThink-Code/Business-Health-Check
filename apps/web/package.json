@@ -14,6 +14,7 @@
     "@bhc/shared": "*",
     "@bhc/ui": "*",
     "@bhc/validation": "*",
+    "@fontsource-variable/inter": "^5.1.1",
     "@hookform/resolvers": "^3.10.0",
     "@marsidev/react-turnstile": "^1.1.0",
     "@tanstack/react-query": "^5.65.0",

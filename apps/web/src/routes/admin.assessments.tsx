@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { Card } from "@bhc/ui";
+import { Card, STATUS_COLOR_TOKENS } from "@bhc/ui";
+import type { BusinessStatus } from "@bhc/shared";
 import type { AdminListAssessmentsResponse } from "@bhc/api";
 import { AdminShell } from "../components/AdminShell";
 import { apiClient } from "../lib/api-client";
@@ -18,41 +19,43 @@ function AdminAssessmentsPage() {
   const { data, isLoading } = useQuery({
     queryKey: ["admin", "assessments", { page, pageSize: PAGE_SIZE }],
     queryFn: () =>
-      apiClient.get<AdminListAssessmentsResponse>(
-        `/api/admin/assessments?page=${page}&pageSize=${PAGE_SIZE}`,
-      ),
+      apiClient.get<AdminListAssessmentsResponse>(`/api/admin/assessments?page=${page}&pageSize=${PAGE_SIZE}`),
   });
 
   const totalPages = data ? Math.max(1, Math.ceil(data.total / PAGE_SIZE)) : 1;
 
   return (
     <AdminShell>
-      <h1 className="mb-6 text-2xl font-bold text-slate-900 dark:text-slate-100">Assessment History</h1>
+      <h1 className="mb-6 text-2xl font-bold text-ink">Assessment History</h1>
 
       {isLoading ? (
-        <p className="text-slate-500">Loading…</p>
+        <p className="text-ink-muted">Loading…</p>
       ) : (
-        <Card className="overflow-x-auto">
+        <Card className="overflow-x-auto !p-0">
           <table className="w-full text-left text-sm">
-            <thead className="text-slate-500">
+            <thead className="text-ink-muted">
               <tr>
-                <th className="pb-2">ID</th>
-                <th className="pb-2">Status</th>
-                <th className="pb-2">Score</th>
-                <th className="pb-2">Business Status</th>
-                <th className="pb-2">Started</th>
-                <th className="pb-2">Completed</th>
+                <th className="px-5 py-3 font-medium">ID</th>
+                <th className="px-5 py-3 font-medium">Status</th>
+                <th className="px-5 py-3 font-medium">Score</th>
+                <th className="px-5 py-3 font-medium">Business status</th>
+                <th className="px-5 py-3 font-medium">Started</th>
+                <th className="px-5 py-3 font-medium">Completed</th>
               </tr>
             </thead>
-            <tbody className="text-slate-800 dark:text-slate-200">
+            <tbody className="text-ink">
               {data?.assessments.map((a) => (
-                <tr key={a.id} className="border-t border-slate-100 dark:border-slate-800">
-                  <td className="py-2 font-mono text-xs">{a.id}</td>
-                  <td className="py-2">{a.status}</td>
-                  <td className="py-2">{a.overallScore ?? "—"}</td>
-                  <td className="py-2">{a.businessStatus ?? "—"}</td>
-                  <td className="py-2">{new Date(a.startedAt).toLocaleString()}</td>
-                  <td className="py-2">{a.completedAt ? new Date(a.completedAt).toLocaleString() : "—"}</td>
+                <tr key={a.id} className="border-t border-border">
+                  <td className="px-5 py-3 font-mono text-xs text-ink-muted">{a.id}</td>
+                  <td className="px-5 py-3 capitalize">{a.status.replace(/_/g, " ")}</td>
+                  <td className="px-5 py-3 tabular-nums">{a.overallScore ?? "—"}</td>
+                  <td className="px-5 py-3">
+                    {a.businessStatus ? <StatusPill status={a.businessStatus} /> : "—"}
+                  </td>
+                  <td className="px-5 py-3 text-ink-secondary">{new Date(a.startedAt).toLocaleString()}</td>
+                  <td className="px-5 py-3 text-ink-secondary">
+                    {a.completedAt ? new Date(a.completedAt).toLocaleString() : "—"}
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -60,19 +63,19 @@ function AdminAssessmentsPage() {
         </Card>
       )}
 
-      <div className="mt-4 flex items-center gap-3">
+      <div className="mt-4 flex items-center gap-4">
         <button
-          className="text-sm text-slate-600 disabled:opacity-40"
+          className="text-sm font-medium text-ink-secondary hover:text-ink disabled:opacity-40"
           disabled={page <= 1}
           onClick={() => setPage((p) => p - 1)}
         >
           Previous
         </button>
-        <span className="text-sm text-slate-500">
+        <span className="text-sm text-ink-muted">
           Page {page} of {totalPages}
         </span>
         <button
-          className="text-sm text-slate-600 disabled:opacity-40"
+          className="text-sm font-medium text-ink-secondary hover:text-ink disabled:opacity-40"
           disabled={page >= totalPages}
           onClick={() => setPage((p) => p + 1)}
         >
@@ -80,5 +83,14 @@ function AdminAssessmentsPage() {
         </button>
       </div>
     </AdminShell>
+  );
+}
+
+function StatusPill({ status }: { status: BusinessStatus }) {
+  const color = STATUS_COLOR_TOKENS[status];
+  return (
+    <span className={`rounded-full px-2.5 py-0.5 text-xs font-semibold capitalize ${color.text} ${color.tint}`}>
+      {status.replace(/_/g, " ")}
+    </span>
   );
 }

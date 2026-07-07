@@ -9,6 +9,7 @@ import { businessInfoSchema, businessAgeOptions, teamSizeOptions } from "@bhc/va
 import { z } from "zod";
 import { apiClient } from "../lib/api-client";
 import type { StartAssessmentResponse } from "@bhc/api";
+import { PublicHeader } from "../components/PublicHeader";
 
 export const Route = createFileRoute("/assessment/start")({
   component: BusinessInfoPage,
@@ -55,102 +56,93 @@ function BusinessInfoPage() {
   });
 
   return (
-    <main className="mx-auto max-w-2xl px-6 py-16">
-      <h1 className="mb-2 text-2xl font-bold text-slate-900 dark:text-slate-100">
-        Tell us about your business
-      </h1>
-      <p className="mb-8 text-slate-600 dark:text-slate-400">
-        This helps us tailor your report. It takes less than a minute.
-      </p>
+    <>
+      <PublicHeader />
+      <main className="page-shell py-14 sm:py-20">
+        <p className="eyebrow mb-2">Step 1 of 2</p>
+        <h1 className="mb-2 text-2xl font-bold text-ink sm:text-3xl">Tell us about your business</h1>
+        <p className="mb-8 text-ink-secondary">This helps us tailor your report. It takes less than a minute.</p>
 
-      <Card>
-        <form
-          className="space-y-5"
-          onSubmit={handleSubmit((values) => startMutation.mutate(values))}
-        >
-          <Field label="Business name" error={errors.businessName?.message}>
-            <input className="input" {...register("businessName")} />
-          </Field>
+        <Card>
+          <form className="space-y-5" onSubmit={handleSubmit((values) => startMutation.mutate(values))}>
+            <Field label="Business name" error={errors.businessName?.message}>
+              <input className="input" {...register("businessName")} />
+            </Field>
 
-          <Field label="Industry" error={errors.industry?.message}>
-            <input className="input" {...register("industry")} placeholder="e.g. E-commerce, Healthcare" />
-          </Field>
+            <Field label="Industry" error={errors.industry?.message}>
+              <input className="input" {...register("industry")} placeholder="e.g. E-commerce, Healthcare" />
+            </Field>
 
-          <Field label="Website (optional)" error={errors.website?.message}>
-            <input className="input" {...register("website")} placeholder="https://example.com" />
-          </Field>
+            <Field label="Website (optional)" error={errors.website?.message}>
+              <input className="input" {...register("website")} placeholder="https://example.com" />
+            </Field>
 
-          <Field label="Country" error={errors.country?.message}>
-            <input className="input" {...register("country")} />
-          </Field>
+            <div className="grid gap-5 sm:grid-cols-2">
+              <Field label="Country" error={errors.country?.message}>
+                <input className="input" {...register("country")} />
+              </Field>
 
-          <Field label="Team size" error={errors.teamSize?.message}>
-            <select className="input" {...register("teamSize")} defaultValue="">
-              <option value="" disabled>
-                Select team size
-              </option>
-              {teamSizeOptions.map((size) => (
-                <option key={size} value={size}>
-                  {size}
-                </option>
-              ))}
-            </select>
-          </Field>
+              <Field label="Team size" error={errors.teamSize?.message}>
+                <select className="input" {...register("teamSize")} defaultValue="">
+                  <option value="" disabled>
+                    Select team size
+                  </option>
+                  {teamSizeOptions.map((size) => (
+                    <option key={size} value={size}>
+                      {size}
+                    </option>
+                  ))}
+                </select>
+              </Field>
+            </div>
 
-          <Field label="Business age" error={errors.businessAge?.message}>
-            <select className="input" {...register("businessAge")} defaultValue="">
-              <option value="" disabled>
-                Select business age
-              </option>
-              {businessAgeOptions.map((age) => (
-                <option key={age} value={age}>
-                  {BUSINESS_AGE_LABELS[age]}
-                </option>
-              ))}
-            </select>
-          </Field>
+            <div className="grid gap-5 sm:grid-cols-2">
+              <Field label="Business age" error={errors.businessAge?.message}>
+                <select className="input" {...register("businessAge")} defaultValue="">
+                  <option value="" disabled>
+                    Select business age
+                  </option>
+                  {businessAgeOptions.map((age) => (
+                    <option key={age} value={age}>
+                      {BUSINESS_AGE_LABELS[age]}
+                    </option>
+                  ))}
+                </select>
+              </Field>
 
-          <Field label="Monthly marketing budget (optional)" error={errors.marketingBudget?.message}>
-            <input className="input" {...register("marketingBudget")} placeholder="e.g. $1,000–$5,000" />
-          </Field>
+              <Field label="Monthly marketing budget (optional)" error={errors.marketingBudget?.message}>
+                <input className="input" {...register("marketingBudget")} placeholder="e.g. $1,000–$5,000" />
+              </Field>
+            </div>
 
-          {import.meta.env.VITE_TURNSTILE_SITE_KEY && (
-            <Turnstile
-              siteKey={import.meta.env.VITE_TURNSTILE_SITE_KEY}
-              onSuccess={(token) => setValue("turnstileToken", token, { shouldValidate: true })}
-            />
-          )}
-          {errors.turnstileToken && (
-            <p className="text-sm text-red-600">{errors.turnstileToken.message}</p>
-          )}
+            {import.meta.env.VITE_TURNSTILE_SITE_KEY && (
+              <Turnstile
+                siteKey={import.meta.env.VITE_TURNSTILE_SITE_KEY}
+                onSuccess={(token) => setValue("turnstileToken", token, { shouldValidate: true })}
+              />
+            )}
+            {errors.turnstileToken && <p className="text-sm text-critical">{errors.turnstileToken.message}</p>}
 
-          {startMutation.isError && (
-            <p className="text-sm text-red-600">{(startMutation.error as Error).message}</p>
-          )}
+            {startMutation.isError && (
+              <p className="text-sm text-critical">{(startMutation.error as Error).message}</p>
+            )}
 
-          <Button type="submit" disabled={isSubmitting || startMutation.isPending} className="w-full">
-            {startMutation.isPending ? "Starting…" : "Continue to questionnaire"}
-          </Button>
-        </form>
-      </Card>
-    </main>
+            <Button type="submit" size="lg" disabled={isSubmitting || startMutation.isPending} className="w-full">
+              {startMutation.isPending ? "Starting…" : "Continue to questionnaire"}
+            </Button>
+          </form>
+        </Card>
+      </main>
+    </>
   );
 }
 
-function Field({
-  label,
-  error,
-  children,
-}: {
-  label: string;
-  error?: string;
-  children: ReactNode;
-}) {
+function Field({ label, error, children }: { label: string; error?: string; children: ReactNode }) {
   return (
     <label className="block">
-      <span className="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">{label}</span>
+      <span className="mb-1.5 block text-sm font-medium text-ink">{label}</span>
       {children}
-      {error && <span className="mt-1 block text-sm text-red-600">{error}</span>}
+      {error && <span className="mt-1.5 block text-sm text-critical">{error}</span>}
     </label>
   );
 }

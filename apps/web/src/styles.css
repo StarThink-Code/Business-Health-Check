@@ -4,8 +4,93 @@
    outside this app's default content-detection root. */
 @source "../../../packages/ui/src";
 
+/*
+ * Design tokens — sourced from the validated reference palette (blue accent,
+ * fixed status colors, warm-neutral ink/surface scale). Light values are the
+ * defaults; dark values override the same custom properties below, so every
+ * utility built from these tokens (bg-surface, text-ink, etc.) swaps
+ * automatically with the OS color scheme.
+ */
+@theme {
+  --font-sans: "Inter Variable", system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  --color-page: #f9f9f7;
+  --color-surface: #ffffff;
+  --color-surface-raised: #ffffff;
+
+  --color-ink: #0b0b0b;
+  --color-ink-secondary: #52514e;
+  --color-ink-muted: #898781;
+
+  --color-border: #e1e0d9;
+  --color-border-strong: #c3c2b7;
+
+  --color-accent-50: #f3f8fe;
+  --color-accent-100: #cde2fb;
+  --color-accent-200: #9ec5f4;
+  --color-accent-300: #6da7ec;
+  --color-accent-400: #3987e5;
+  --color-accent-500: #2a78d6;
+  --color-accent-600: #256abf;
+  --color-accent-700: #184f95;
+  --color-accent-800: #104281;
+  --color-accent-900: #0d366b;
+  --color-accent: var(--color-accent-500);
+  --color-accent-tint: var(--color-accent-50);
+
+  /* Status hues per the reference palette. warning/serious are darkened from
+     the reference's #fab219/#ec835a — those fail text contrast on a light
+     surface (1.79:1 / 2.57:1) and we render status as colored text, not just
+     an icon, so we need an AA-safe step of the same hue instead. */
+  --color-good: #0ca30c;
+  --color-good-tint: #e5f6e5;
+  --color-warning: #b8790a;
+  --color-warning-tint: #fdf1dc;
+  --color-serious: #c85a30;
+  --color-serious-tint: #fbe7de;
+  --color-critical: #d03b3b;
+  --color-critical-tint: #fbe2e2;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-page: #0d0d0d;
+    --color-surface: #171716;
+    --color-surface-raised: #1e1e1c;
+
+    --color-ink: #ffffff;
+    --color-ink-secondary: #c3c2b7;
+    --color-ink-muted: #898781;
+
+    --color-border: #2c2c2a;
+    --color-border-strong: #383835;
+
+    --color-accent: var(--color-accent-400);
+    --color-accent-tint: rgba(57, 135, 229, 0.15);
+
+    --color-good-tint: rgba(12, 163, 12, 0.15);
+    --color-warning-tint: rgba(250, 178, 25, 0.15);
+    --color-serious-tint: rgba(236, 131, 90, 0.15);
+    --color-critical-tint: rgba(208, 59, 59, 0.15);
+  }
+}
+
+body {
+  background-color: var(--color-page);
+  color: var(--color-ink);
+  font-feature-settings: "cv11", "ss01";
+}
+
 @layer components {
   .input {
-    @apply block w-full rounded-md border border-slate-300 px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100;
+    @apply block w-full rounded-lg border border-border bg-surface px-3.5 py-2.5 text-[15px] text-ink shadow-sm transition-shadow placeholder:text-ink-muted focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20;
+  }
+
+  .page-shell {
+    @apply mx-auto w-full max-w-3xl px-6;
+  }
+
+  .eyebrow {
+    @apply text-xs font-semibold uppercase tracking-wider text-ink-muted;
   }
 }

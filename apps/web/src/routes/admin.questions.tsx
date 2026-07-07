@@ -31,33 +31,33 @@ function AdminQuestionsPage() {
   return (
     <AdminShell>
       <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Questions</h1>
+        <h1 className="text-2xl font-bold text-ink">Questions</h1>
         <Button onClick={() => setEditing("new")}>Add question</Button>
       </div>
 
       {editing && (
         <div className="mb-8">
-          <QuestionForm
-            question={editing === "new" ? null : editing}
-            onDone={() => setEditing(null)}
-          />
+          <QuestionForm question={editing === "new" ? null : editing} onDone={() => setEditing(null)} />
         </div>
       )}
 
       {isLoading ? (
-        <p className="text-slate-500">Loading…</p>
+        <p className="text-ink-muted">Loading…</p>
       ) : (
         <div className="space-y-3">
           {data?.questions.map((q) => (
-            <Card key={q.id} className="flex items-center justify-between">
+            <Card key={q.id} className="flex items-center justify-between !p-5">
               <div>
-                <p className="text-xs font-medium uppercase tracking-wide text-slate-500">
-                  {CATEGORY_LABELS[q.categorySlug]} {!q.isActive && "· disabled"}
+                <p className="eyebrow mb-1 flex items-center gap-2">
+                  {CATEGORY_LABELS[q.categorySlug]}
+                  {!q.isActive && (
+                    <span className="rounded-full bg-page px-2 py-0.5 text-ink-muted">Disabled</span>
+                  )}
                 </p>
-                <p className="text-slate-900 dark:text-slate-100">{q.prompt}</p>
-                <p className="text-sm text-slate-500">{q.options.length} options</p>
+                <p className="text-ink">{q.prompt}</p>
+                <p className="text-sm text-ink-muted">{q.options.length} options</p>
               </div>
-              <div className="flex gap-2">
+              <div className="flex shrink-0 gap-2">
                 <Button variant="secondary" onClick={() => setEditing(q)}>
                   Edit
                 </Button>
@@ -124,7 +124,7 @@ function QuestionForm({ question, onDone }: { question: Question | null; onDone:
     <Card>
       <form className="space-y-4" onSubmit={handleSubmit((values) => saveMutation.mutate(values))}>
         <label className="block">
-          <span className="mb-1 block text-sm font-medium">Category</span>
+          <span className="mb-1.5 block text-sm font-medium text-ink">Category</span>
           <select className="input" {...register("categorySlug")}>
             {ASSESSMENT_CATEGORIES.map((slug) => (
               <option key={slug} value={slug}>
@@ -135,29 +135,29 @@ function QuestionForm({ question, onDone }: { question: Question | null; onDone:
         </label>
 
         <label className="block">
-          <span className="mb-1 block text-sm font-medium">Prompt</span>
+          <span className="mb-1.5 block text-sm font-medium text-ink">Prompt</span>
           <input className="input" {...register("prompt")} />
-          {errors.prompt && <span className="text-sm text-red-600">{errors.prompt.message}</span>}
+          {errors.prompt && <span className="text-sm text-critical">{errors.prompt.message}</span>}
         </label>
 
         <label className="block">
-          <span className="mb-1 block text-sm font-medium">Help text (optional)</span>
+          <span className="mb-1.5 block text-sm font-medium text-ink">Help text (optional)</span>
           <input className="input" {...register("helpText")} />
         </label>
 
         <div className="grid grid-cols-2 gap-4">
           <label className="block">
-            <span className="mb-1 block text-sm font-medium">Sort order</span>
+            <span className="mb-1.5 block text-sm font-medium text-ink">Sort order</span>
             <input className="input" type="number" {...register("sortOrder", { valueAsNumber: true })} />
           </label>
-          <label className="flex items-end gap-2 pb-2">
-            <input type="checkbox" {...register("isActive")} />
-            <span className="text-sm font-medium">Active</span>
+          <label className="flex items-end gap-2 pb-2.5">
+            <input type="checkbox" className="h-4 w-4 accent-accent" {...register("isActive")} />
+            <span className="text-sm font-medium text-ink">Active</span>
           </label>
         </div>
 
         <div>
-          <span className="mb-2 block text-sm font-medium">Options</span>
+          <span className="mb-2 block text-sm font-medium text-ink">Options</span>
           <div className="space-y-2">
             {fields.map((field, index) => (
               <div key={field.id} className="flex gap-2">
@@ -172,14 +172,18 @@ function QuestionForm({ question, onDone }: { question: Question | null; onDone:
                   placeholder="Score"
                   {...register(`options.${index}.score` as const, { valueAsNumber: true })}
                 />
-                <input type="hidden" value={index} {...register(`options.${index}.sortOrder` as const, { valueAsNumber: true })} />
+                <input
+                  type="hidden"
+                  value={index}
+                  {...register(`options.${index}.sortOrder` as const, { valueAsNumber: true })}
+                />
                 <Button type="button" variant="ghost" onClick={() => remove(index)}>
                   Remove
                 </Button>
               </div>
             ))}
           </div>
-          {errors.options && <p className="mt-1 text-sm text-red-600">{errors.options.message}</p>}
+          {errors.options && <p className="mt-1 text-sm text-critical">{errors.options.message}</p>}
           <Button
             type="button"
             variant="secondary"
@@ -190,11 +194,9 @@ function QuestionForm({ question, onDone }: { question: Question | null; onDone:
           </Button>
         </div>
 
-        {saveMutation.isError && (
-          <p className="text-sm text-red-600">{(saveMutation.error as Error).message}</p>
-        )}
+        {saveMutation.isError && <p className="text-sm text-critical">{(saveMutation.error as Error).message}</p>}
 
-        <div className="flex gap-2">
+        <div className="flex gap-2 border-t border-border pt-4">
           <Button type="submit" disabled={saveMutation.isPending}>
             {saveMutation.isPending ? "Saving…" : "Save"}
           </Button>
