@@ -1,0 +1,66 @@
+#:schema node_modules/wrangler/config-schema.json
+name = "bhc-worker"
+main = "src/index.ts"
+compatibility_date = "2025-01-01"
+compatibility_flags = ["nodejs_compat"]
+
+# ---------------------------------------------------------------------------
+# Cloudflare resources — provisioned in the StarThink account
+# (starthinkmy@gmail.com). R2 still needs to be enabled once in the
+# dashboard before `bhc-reports` can be created; see docs/cloudflare-setup.md.
+# ---------------------------------------------------------------------------
+
+[[d1_databases]]
+binding = "DB"
+database_name = "bhc-db"
+database_id = "d4e08642-e2cd-4a6c-80a6-aa8e90da2116"
+migrations_dir = "migrations"
+
+[[kv_namespaces]]
+binding = "CACHE"
+id = "cadfb0d34cda40a0a7dea856f60c12a1"
+
+[[kv_namespaces]]
+binding = "RATE_LIMIT"
+id = "d7f07d0f0d0c4427a7009e3c7ad48dd3"
+
+# R2 not yet enabled on this account (dashboard → R2 → enable), and no code
+# uses it yet (PDF report generation is unbuilt). Once enabled:
+#   wrangler r2 bucket create bhc-reports
+# then uncomment:
+# [[r2_buckets]]
+# binding = "REPORTS"
+# bucket_name = "bhc-reports"
+
+[vars]
+ADMIN_SESSION_TTL_SECONDS = "28800"
+ENVIRONMENT = "development"
+
+# Secrets (never stored in this file — set with `wrangler secret put <NAME>`):
+#   JWT_SECRET
+#   TURNSTILE_SECRET_KEY
+
+[env.production]
+name = "bhc-worker-production"
+
+[[env.production.d1_databases]]
+binding = "DB"
+database_name = "bhc-db"
+database_id = "d4e08642-e2cd-4a6c-80a6-aa8e90da2116"
+migrations_dir = "migrations"
+
+[[env.production.kv_namespaces]]
+binding = "CACHE"
+id = "cadfb0d34cda40a0a7dea856f60c12a1"
+
+[[env.production.kv_namespaces]]
+binding = "RATE_LIMIT"
+id = "d7f07d0f0d0c4427a7009e3c7ad48dd3"
+
+# [[env.production.r2_buckets]]
+# binding = "REPORTS"
+# bucket_name = "bhc-reports"
+
+[env.production.vars]
+ADMIN_SESSION_TTL_SECONDS = "28800"
+ENVIRONMENT = "production"

@@ -1,0 +1,15 @@
+node_modules/
+dist/
+build/
+.wrangler/
+.dev.vars
+.env
+.env.*
+!.env.example
+*.log
+.DS_Store
+.turbo/
+coverage/
+*.tsbuildinfo
+.vscode/*
+!.vscode/extensions.json

@@ -1,0 +1,25 @@
+{
+  "name": "business-health-check",
+  "private": true,
+  "version": "0.1.0",
+  "engines": {
+    "node": ">=20"
+  },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev:web": "npm run dev -w @bhc/web",
+    "dev:worker": "npm run dev -w @bhc/worker",
+    "build": "npm run build --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present",
+    "db:generate": "npm run db:generate -w @bhc/database",
+    "db:migrate:local": "npm run db:migrate:local -w @bhc/worker",
+    "db:migrate:remote": "npm run db:migrate:remote -w @bhc/worker"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.3"
+  }
+}
