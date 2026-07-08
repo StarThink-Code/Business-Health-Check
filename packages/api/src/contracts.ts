@@ -1,4 +1,5 @@
 import type {
+  AdminAssessmentDetail,
   AdminUser,
   Assessment,
   AssessmentReport,
@@ -62,6 +63,9 @@ export interface AdminListAssessmentsResponse {
   assessments: Assessment[];
   total: number;
 }
+
+// ---- Admin: GET /api/admin/assessments/:id ----
+export type AdminGetAssessmentResponse = AdminAssessmentDetail;
 
 // ---- Admin: recommendation rules (Module 6 / Recommendation Management) ----
 export type AdminUpsertRecommendationRuleRequest = RecommendationRuleInput;

@@ -9,4 +9,5 @@ export const API_ROUTES = {
   adminQuestions: "/api/admin/questions",
   adminQuestion: (id: string) => `/api/admin/questions/${id}`,
   adminAssessments: "/api/admin/assessments",
+  adminAssessment: (id: string) => `/api/admin/assessments/${id}`,
 } as const;

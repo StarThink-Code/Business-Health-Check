@@ -100,3 +100,19 @@ export interface AdminUser {
   name: string;
   createdAt: string;
 }
+
+export interface AdminAssessmentAnswerDetail {
+  questionId: string;
+  categorySlug: AssessmentCategorySlug;
+  categoryLabel: string;
+  prompt: string;
+  optionId: string;
+  optionLabel: string;
+  score: number;
+}
+
+export interface AdminAssessmentDetail {
+  assessment: Assessment;
+  business: Business;
+  answers: AdminAssessmentAnswerDetail[];
+}

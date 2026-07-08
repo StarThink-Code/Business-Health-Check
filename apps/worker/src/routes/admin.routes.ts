@@ -13,7 +13,7 @@ import {
   listAllQuestions,
   updateQuestion,
 } from "../services/admin-questions.service";
-import { listAssessments } from "../services/admin-assessments.service";
+import { listAssessments, getAssessmentDetail } from "../services/admin-assessments.service";
 import { recordAuditLog } from "../services/audit";
 
 export const adminRoutes = new Hono<{ Bindings: Env; Variables: { admin: AdminJwtPayload } }>();
@@ -85,4 +85,10 @@ adminRoutes.get("/assessments", async (c) => {
   const pageSize = Number(c.req.query("pageSize") ?? "20");
   const result = await listAssessments(db, { page, pageSize });
   return c.json(ok(result));
+});
+
+adminRoutes.get("/assessments/:id", async (c) => {
+  const db = createDb(c.env.DB);
+  const detail = await getAssessmentDetail(db, c.req.param("id"));
+  return c.json(ok(detail));
 });

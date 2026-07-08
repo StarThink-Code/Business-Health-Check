@@ -20,7 +20,9 @@ import { Route as AdminLoginRouteImport } from './routes/admin.login'
 import { Route as AdminCategoriesRouteImport } from './routes/admin.categories'
 import { Route as AdminAssessmentsRouteImport } from './routes/admin.assessments'
 import { Route as AdminAnalyticsRouteImport } from './routes/admin.analytics'
+import { Route as AdminAssessmentsIndexRouteImport } from './routes/admin.assessments.index'
 import { Route as AssessmentAssessmentIdQuestionnaireRouteImport } from './routes/assessment.$assessmentId.questionnaire'
+import { Route as AdminAssessmentsAssessmentIdRouteImport } from './routes/admin.assessments.$assessmentId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -77,17 +79,28 @@ const AdminAnalyticsRoute = AdminAnalyticsRouteImport.update({
   path: '/admin/analytics',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminAssessmentsIndexRoute = AdminAssessmentsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminAssessmentsRoute,
+} as any)
 const AssessmentAssessmentIdQuestionnaireRoute =
   AssessmentAssessmentIdQuestionnaireRouteImport.update({
     id: '/assessment/$assessmentId/questionnaire',
     path: '/assessment/$assessmentId/questionnaire',
     getParentRoute: () => rootRouteImport,
   } as any)
+const AdminAssessmentsAssessmentIdRoute =
+  AdminAssessmentsAssessmentIdRouteImport.update({
+    id: '/$assessmentId',
+    path: '/$assessmentId',
+    getParentRoute: () => AdminAssessmentsRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
-  '/admin/assessments': typeof AdminAssessmentsRoute
+  '/admin/assessments': typeof AdminAssessmentsRouteWithChildren
   '/admin/categories': typeof AdminCategoriesRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin/questions': typeof AdminQuestionsRoute
@@ -96,12 +109,13 @@ export interface FileRoutesByFullPath {
   '/assessment/start': typeof AssessmentStartRoute
   '/report/$assessmentId': typeof ReportAssessmentIdRoute
   '/admin/': typeof AdminIndexRoute
+  '/admin/assessments/$assessmentId': typeof AdminAssessmentsAssessmentIdRoute
   '/assessment/$assessmentId/questionnaire': typeof AssessmentAssessmentIdQuestionnaireRoute
+  '/admin/assessments/': typeof AdminAssessmentsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
-  '/admin/assessments': typeof AdminAssessmentsRoute
   '/admin/categories': typeof AdminCategoriesRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin/questions': typeof AdminQuestionsRoute
@@ -110,13 +124,15 @@ export interface FileRoutesByTo {
   '/assessment/start': typeof AssessmentStartRoute
   '/report/$assessmentId': typeof ReportAssessmentIdRoute
   '/admin': typeof AdminIndexRoute
+  '/admin/assessments/$assessmentId': typeof AdminAssessmentsAssessmentIdRoute
   '/assessment/$assessmentId/questionnaire': typeof AssessmentAssessmentIdQuestionnaireRoute
+  '/admin/assessments': typeof AdminAssessmentsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
-  '/admin/assessments': typeof AdminAssessmentsRoute
+  '/admin/assessments': typeof AdminAssessmentsRouteWithChildren
   '/admin/categories': typeof AdminCategoriesRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin/questions': typeof AdminQuestionsRoute
@@ -125,7 +141,9 @@ export interface FileRoutesById {
   '/assessment/start': typeof AssessmentStartRoute
   '/report/$assessmentId': typeof ReportAssessmentIdRoute
   '/admin/': typeof AdminIndexRoute
+  '/admin/assessments/$assessmentId': typeof AdminAssessmentsAssessmentIdRoute
   '/assessment/$assessmentId/questionnaire': typeof AssessmentAssessmentIdQuestionnaireRoute
+  '/admin/assessments/': typeof AdminAssessmentsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -141,12 +159,13 @@ export interface FileRouteTypes {
     | '/assessment/start'
     | '/report/$assessmentId'
     | '/admin/'
+    | '/admin/assessments/$assessmentId'
     | '/assessment/$assessmentId/questionnaire'
+    | '/admin/assessments/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/admin/analytics'
-    | '/admin/assessments'
     | '/admin/categories'
     | '/admin/login'
     | '/admin/questions'
@@ -155,7 +174,9 @@ export interface FileRouteTypes {
     | '/assessment/start'
     | '/report/$assessmentId'
     | '/admin'
+    | '/admin/assessments/$assessmentId'
     | '/assessment/$assessmentId/questionnaire'
+    | '/admin/assessments'
   id:
     | '__root__'
     | '/'
@@ -169,13 +190,15 @@ export interface FileRouteTypes {
     | '/assessment/start'
     | '/report/$assessmentId'
     | '/admin/'
+    | '/admin/assessments/$assessmentId'
     | '/assessment/$assessmentId/questionnaire'
+    | '/admin/assessments/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminAnalyticsRoute: typeof AdminAnalyticsRoute
-  AdminAssessmentsRoute: typeof AdminAssessmentsRoute
+  AdminAssessmentsRoute: typeof AdminAssessmentsRouteWithChildren
   AdminCategoriesRoute: typeof AdminCategoriesRoute
   AdminLoginRoute: typeof AdminLoginRoute
   AdminQuestionsRoute: typeof AdminQuestionsRoute
@@ -266,6 +289,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAnalyticsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/assessments/': {
+      id: '/admin/assessments/'
+      path: '/'
+      fullPath: '/admin/assessments/'
+      preLoaderRoute: typeof AdminAssessmentsIndexRouteImport
+      parentRoute: typeof AdminAssessmentsRoute
+    }
     '/assessment/$assessmentId/questionnaire': {
       id: '/assessment/$assessmentId/questionnaire'
       path: '/assessment/$assessmentId/questionnaire'
@@ -273,13 +303,33 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AssessmentAssessmentIdQuestionnaireRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/assessments/$assessmentId': {
+      id: '/admin/assessments/$assessmentId'
+      path: '/$assessmentId'
+      fullPath: '/admin/assessments/$assessmentId'
+      preLoaderRoute: typeof AdminAssessmentsAssessmentIdRouteImport
+      parentRoute: typeof AdminAssessmentsRoute
+    }
   }
 }
+
+interface AdminAssessmentsRouteChildren {
+  AdminAssessmentsAssessmentIdRoute: typeof AdminAssessmentsAssessmentIdRoute
+  AdminAssessmentsIndexRoute: typeof AdminAssessmentsIndexRoute
+}
+
+const AdminAssessmentsRouteChildren: AdminAssessmentsRouteChildren = {
+  AdminAssessmentsAssessmentIdRoute: AdminAssessmentsAssessmentIdRoute,
+  AdminAssessmentsIndexRoute: AdminAssessmentsIndexRoute,
+}
+
+const AdminAssessmentsRouteWithChildren =
+  AdminAssessmentsRoute._addFileChildren(AdminAssessmentsRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminAnalyticsRoute: AdminAnalyticsRoute,
-  AdminAssessmentsRoute: AdminAssessmentsRoute,
+  AdminAssessmentsRoute: AdminAssessmentsRouteWithChildren,
   AdminCategoriesRoute: AdminCategoriesRoute,
   AdminLoginRoute: AdminLoginRoute,
   AdminQuestionsRoute: AdminQuestionsRoute,
