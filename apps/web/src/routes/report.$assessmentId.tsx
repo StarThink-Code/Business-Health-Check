@@ -11,7 +11,7 @@ import {
 } from "chart.js";
 import { Radar } from "react-chartjs-2";
 import { Card, ProgressBar, StatusBadge, StatTile, buttonClassName, STATUS_COLOR_TOKENS } from "@bhc/ui";
-import { resolveBusinessStatus } from "@bhc/shared";
+import { resolveBusinessStatus, CONTACT } from "@bhc/shared";
 import type { GetReportResponse } from "@bhc/api";
 import { apiClient, apiUrl } from "../lib/api-client";
 import { PublicHeader } from "../components/PublicHeader";
@@ -25,8 +25,6 @@ export const Route = createFileRoute("/report/$assessmentId")({
 // Muted ink token — identical hex in light and dark mode, so it's safe to
 // hardcode for canvas rendering (Chart.js can't read CSS custom properties).
 const MUTED = "#898781";
-
-const WHATSAPP_NUMBER = "60122646895";
 
 function ReportPage() {
   const { assessmentId } = Route.useParams();
@@ -43,7 +41,7 @@ function ReportPage() {
   const whatsappMessage = encodeURIComponent(
     `Hi! I'd like to book a consultation about my Business Health Report for ${data.business.name} (score: ${Math.round(data.overallScore)}, ${data.businessStatusLabel}).`,
   );
-  const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${whatsappMessage}`;
+  const whatsappUrl = `https://wa.me/${CONTACT.whatsappNumber}?text=${whatsappMessage}`;
 
   const radarData = {
     labels: data.categoryScores.map((c) => c.label),

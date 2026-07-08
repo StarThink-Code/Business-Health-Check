@@ -1,5 +1,5 @@
 import { PDFDocument, StandardFonts, rgb, type PDFFont, type PDFPage, type RGB } from "pdf-lib";
-import type { AssessmentReport, CategoryScore } from "@bhc/shared";
+import { CONTACT, type AssessmentReport, type CategoryScore } from "@bhc/shared";
 
 const PAGE_WIDTH = 595.28; // A4
 const PAGE_HEIGHT = 841.89;
@@ -245,15 +245,46 @@ export async function generateReportPdf(report: AssessmentReport, logoPngBytes?:
   }
 
   // Footer CTA
-  flow.ensureSpace(70);
-  flow.page.drawRectangle({ x: MARGIN, y: flow.y - 60, width: CONTENT_WIDTH, height: 60, color: COLOR.accentPanel });
+  const ctaPanelHeight = 74;
+  flow.ensureSpace(ctaPanelHeight + 10);
+  flow.page.drawRectangle({
+    x: MARGIN,
+    y: flow.y - ctaPanelHeight,
+    width: CONTENT_WIDTH,
+    height: ctaPanelHeight,
+    color: COLOR.accentPanel,
+  });
   flow.page.drawText("Want help acting on this? Book a free consultation.", {
     x: MARGIN + 20,
-    y: flow.y - 35,
+    y: flow.y - 30,
     size: 12,
     font: bold,
     color: COLOR.white,
   });
+  flow.page.drawText(`${CONTACT.companyName} — WhatsApp ${CONTACT.whatsappDisplay}`, {
+    x: MARGIN + 20,
+    y: flow.y - 50,
+    size: 10,
+    font: regular,
+    color: COLOR.white,
+    opacity: 0.85,
+  });
+  flow.y -= ctaPanelHeight;
+
+  // Copyright — drawn last so it lands on every page the flow ended up creating.
+  const copyrightText = `Copyright © ${new Date().getFullYear()} ${CONTACT.copyrightHolder}. All Rights Reserved.`;
+  const copyrightSize = 8;
+  for (const page of doc.getPages()) {
+    const width = page.getWidth();
+    const textWidth = regular.widthOfTextAtSize(copyrightText, copyrightSize);
+    page.drawText(copyrightText, {
+      x: (width - textWidth) / 2,
+      y: 24,
+      size: copyrightSize,
+      font: regular,
+      color: COLOR.inkMuted,
+    });
+  }
 
   return doc.save();
 }

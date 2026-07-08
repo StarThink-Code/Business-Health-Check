@@ -3,3 +3,4 @@ export * from "./business-status";
 export * from "./types";
 export * from "./scoring";
 export * from "./recommendations";
+export * from "./contact";
