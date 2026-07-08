@@ -5,6 +5,7 @@ import type {
   Assessment,
   AssessmentReport,
   Question,
+  RecommendationRule,
 } from "@bhc/shared";
 import type {
   AdminLoginInput,
@@ -87,5 +88,20 @@ export interface AdminDeleteCategoryResponse {
   deleted: true;
 }
 
-// ---- Admin: recommendation rules (Module 6 / Recommendation Management) ----
-export type AdminUpsertRecommendationRuleRequest = RecommendationRuleInput;
+// ---- Admin: GET /api/admin/recommendations ----
+export interface AdminListRecommendationRulesResponse {
+  rules: RecommendationRule[];
+}
+
+// ---- Admin: POST /api/admin/recommendations ----
+export type AdminCreateRecommendationRuleRequest = RecommendationRuleInput;
+export type AdminCreateRecommendationRuleResponse = RecommendationRule;
+
+// ---- Admin: PUT /api/admin/recommendations/:id ----
+export type AdminUpdateRecommendationRuleRequest = RecommendationRuleInput;
+export type AdminUpdateRecommendationRuleResponse = RecommendationRule;
+
+// ---- Admin: DELETE /api/admin/recommendations/:id ----
+export interface AdminDeleteRecommendationRuleResponse {
+  deleted: true;
+}

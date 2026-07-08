@@ -4,6 +4,7 @@ import { categories, questions, recommendationRules, type Database } from "@bhc/
 import type { AdminCategory } from "@bhc/shared";
 import type { CategoryInput } from "@bhc/validation";
 import { newId } from "../lib/ids";
+import { invalidateCachedReportPdfs } from "./pdf-cache.service";
 
 export async function listCategories(db: Database): Promise<AdminCategory[]> {
   const [categoryRows, questionRows] = await Promise.all([
@@ -60,6 +61,7 @@ export async function updateCategory(db: Database, id: string, input: CategoryIn
     .update(categories)
     .set({ slug: input.slug, label: input.label, sortOrder: input.sortOrder, isActive: input.isActive })
     .where(eq(categories.id, id));
+  await invalidateCachedReportPdfs(db);
 
   const questionRows = await db.select().from(questions).where(eq(questions.categoryId, id));
   return {
@@ -92,4 +94,5 @@ export async function deleteCategory(db: Database, id: string): Promise<void> {
   }
 
   await db.delete(categories).where(eq(categories.id, id));
+  await invalidateCachedReportPdfs(db);
 }

@@ -1,7 +1,12 @@
 import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
 import { ok } from "@bhc/api";
-import { adminLoginSchema, questionInputSchema, categoryInputSchema } from "@bhc/validation";
+import {
+  adminLoginSchema,
+  questionInputSchema,
+  categoryInputSchema,
+  recommendationRuleInputSchema,
+} from "@bhc/validation";
 import { createDb } from "@bhc/database";
 import type { Env } from "../env";
 import { rateLimit } from "../middleware/rate-limit";
@@ -15,6 +20,12 @@ import {
 } from "../services/admin-questions.service";
 import { listAssessments, getAssessmentDetail } from "../services/admin-assessments.service";
 import { listCategories, createCategory, updateCategory, deleteCategory } from "../services/admin-categories.service";
+import {
+  listRecommendationRules,
+  createRecommendationRule,
+  updateRecommendationRule,
+  deleteRecommendationRule,
+} from "../services/admin-recommendations.service";
 import { recordAuditLog } from "../services/audit";
 
 export const adminRoutes = new Hono<{ Bindings: Env; Variables: { admin: AdminJwtPayload } }>();
@@ -135,6 +146,52 @@ adminRoutes.delete("/categories/:id", async (c) => {
     adminUserId: c.get("admin").sub,
     action: "category.delete",
     entityType: "category",
+    entityId: id,
+  });
+  return c.json(ok({ deleted: true }));
+});
+
+adminRoutes.get("/recommendations", async (c) => {
+  const db = createDb(c.env.DB);
+  const rules = await listRecommendationRules(db);
+  return c.json(ok({ rules }));
+});
+
+adminRoutes.post("/recommendations", zValidator("json", recommendationRuleInputSchema), async (c) => {
+  const input = c.req.valid("json");
+  const db = createDb(c.env.DB);
+  const rule = await createRecommendationRule(db, input);
+  await recordAuditLog(db, {
+    adminUserId: c.get("admin").sub,
+    action: "recommendation.create",
+    entityType: "recommendation_rule",
+    entityId: rule.id,
+  });
+  return c.json(ok(rule), 201);
+});
+
+adminRoutes.put("/recommendations/:id", zValidator("json", recommendationRuleInputSchema), async (c) => {
+  const input = c.req.valid("json");
+  const id = c.req.param("id");
+  const db = createDb(c.env.DB);
+  const rule = await updateRecommendationRule(db, id, input);
+  await recordAuditLog(db, {
+    adminUserId: c.get("admin").sub,
+    action: "recommendation.update",
+    entityType: "recommendation_rule",
+    entityId: id,
+  });
+  return c.json(ok(rule));
+});
+
+adminRoutes.delete("/recommendations/:id", async (c) => {
+  const id = c.req.param("id");
+  const db = createDb(c.env.DB);
+  await deleteRecommendationRule(db, id);
+  await recordAuditLog(db, {
+    adminUserId: c.get("admin").sub,
+    action: "recommendation.delete",
+    entityType: "recommendation_rule",
     entityId: id,
   });
   return c.json(ok({ deleted: true }));
