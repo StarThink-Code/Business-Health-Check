@@ -10,7 +10,7 @@ import {
   Legend,
 } from "chart.js";
 import { Radar } from "react-chartjs-2";
-import { Card, ProgressBar, StatusBadge, StatTile, Button, buttonClassName, STATUS_COLOR_TOKENS } from "@bhc/ui";
+import { Card, ProgressBar, StatusBadge, StatTile, buttonClassName, STATUS_COLOR_TOKENS } from "@bhc/ui";
 import { resolveBusinessStatus } from "@bhc/shared";
 import type { GetReportResponse } from "@bhc/api";
 import { apiClient, apiUrl } from "../lib/api-client";
@@ -26,6 +26,8 @@ export const Route = createFileRoute("/report/$assessmentId")({
 // hardcode for canvas rendering (Chart.js can't read CSS custom properties).
 const MUTED = "#898781";
 
+const WHATSAPP_NUMBER = "60122646895";
+
 function ReportPage() {
   const { assessmentId } = Route.useParams();
 
@@ -38,6 +40,10 @@ function ReportPage() {
   if (isError || !data) return <CenteredMessage>Report not found.</CenteredMessage>;
 
   const statusColor = STATUS_COLOR_TOKENS[data.businessStatus];
+  const whatsappMessage = encodeURIComponent(
+    `Hi! I'd like to book a consultation about my Business Health Report for ${data.business.name} (score: ${Math.round(data.overallScore)}, ${data.businessStatusLabel}).`,
+  );
+  const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${whatsappMessage}`;
 
   const radarData = {
     labels: data.categoryScores.map((c) => c.label),
@@ -152,12 +158,26 @@ function ReportPage() {
           <p className="mx-auto mt-2 max-w-sm text-white/80">
             Book a free consultation and we'll walk through your results together.
           </p>
-          <Button size="lg" className="mt-6">
-            Book a consultation
-          </Button>
+          <a
+            href={whatsappUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={buttonClassName("primary", "lg", "mt-6")}
+          >
+            <WhatsAppIcon />
+            Book a consultation on WhatsApp
+          </a>
         </div>
       </main>
     </>
+  );
+}
+
+function WhatsAppIcon() {
+  return (
+    <svg viewBox="0 0 16 16" width="16" height="16" fill="currentColor" aria-hidden>
+      <path d="M8 1.5a6.5 6.5 0 0 0-5.6 9.78L1.5 14.5l3.32-.87A6.5 6.5 0 1 0 8 1.5Zm0 1.3a5.2 5.2 0 0 1 4.42 7.94l-.14.23.5 1.83-1.87-.49-.23.13A5.2 5.2 0 1 1 8 2.8Zm-2.6 2.4c-.14 0-.36.05-.55.27-.19.21-.72.7-.72 1.72 0 1.01.74 1.98.84 2.12.1.14 1.44 2.2 3.5 3 1.75.68 2.02.55 2.39.51.37-.04 1.19-.48 1.35-.95.17-.46.17-.86.12-.95-.05-.08-.19-.13-.4-.24-.2-.1-1.2-.59-1.38-.66-.19-.07-.32-.1-.46.1-.13.2-.52.65-.64.79-.12.13-.24.15-.44.05-.2-.1-.86-.32-1.63-1.01-.6-.54-1.01-1.2-1.13-1.4-.12-.2-.01-.31.09-.4.09-.1.2-.24.3-.36.1-.12.13-.2.2-.34.07-.14.03-.26-.02-.36-.05-.1-.46-1.13-.63-1.54-.16-.4-.33-.34-.46-.35Z" />
+    </svg>
   );
 }
 
