@@ -34,9 +34,10 @@ export function resolveBusinessStatus(
   score: number,
   thresholds: BusinessStatusThreshold[] = DEFAULT_BUSINESS_STATUS_THRESHOLDS,
 ): BusinessStatusThreshold {
-  const match = thresholds.find((t) => score >= t.minScore && score <= t.maxScore);
-  if (match) return match;
-  // Score outside all configured ranges (e.g. gaps in admin config) — clamp to nearest.
-  const sorted = [...thresholds].sort((a, b) => a.minScore - b.minScore);
-  return score < (sorted[0]?.minScore ?? 0) ? sorted[0]! : sorted[sorted.length - 1]!;
+  // Match by minScore only (highest band whose floor the score clears), not
+  // an inclusive [min,max] range: real scores are floats (e.g. an average of
+  // 59.1), but band boundaries are whole numbers, so an inclusive-range match
+  // leaves a gap between e.g. 59 and 60 that matches no band at all.
+  const sorted = [...thresholds].sort((a, b) => b.minScore - a.minScore);
+  return sorted.find((t) => score >= t.minScore) ?? sorted[sorted.length - 1]!;
 }

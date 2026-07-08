@@ -1,4 +1,5 @@
 import type {
+  AdminAnalytics,
   AdminAssessmentDetail,
   AdminCategory,
   AdminUser,
@@ -60,6 +61,9 @@ export type AdminUpdateQuestionResponse = Question;
 export interface AdminDeleteQuestionResponse {
   deleted: true;
 }
+
+// ---- Admin: GET /api/admin/analytics ----
+export type AdminAnalyticsResponse = AdminAnalytics;
 
 // ---- Admin: GET /api/admin/assessments ----
 export interface AdminListAssessmentsResponse {

@@ -125,3 +125,27 @@ export interface AdminAssessmentDetail {
   business: Business;
   answers: AdminAssessmentAnswerDetail[];
 }
+
+export interface AnalyticsOverview {
+  totalAssessments: number;
+  completedAssessments: number;
+  inProgressAssessments: number;
+  /** 0-100, share of all assessments that reached "completed" */
+  completionRate: number;
+  /** Average overall score across completed assessments */
+  averageScore: number;
+  statusCounts: Record<BusinessStatus, number>;
+}
+
+export interface CategoryPerformance {
+  categorySlug: AssessmentCategorySlug;
+  label: string;
+  /** Average category percentage across completed assessments */
+  averageScore: number;
+  assessmentCount: number;
+}
+
+export interface AdminAnalytics {
+  overview: AnalyticsOverview;
+  categoryPerformance: CategoryPerformance[];
+}

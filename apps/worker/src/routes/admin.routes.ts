@@ -19,6 +19,7 @@ import {
   updateQuestion,
 } from "../services/admin-questions.service";
 import { listAssessments, getAssessmentDetail } from "../services/admin-assessments.service";
+import { getAnalytics } from "../services/admin-analytics.service";
 import { listCategories, createCategory, updateCategory, deleteCategory } from "../services/admin-categories.service";
 import {
   listRecommendationRules,
@@ -89,6 +90,12 @@ adminRoutes.delete("/questions/:id", async (c) => {
     entityId: id,
   });
   return c.json(ok({ deleted: true }));
+});
+
+adminRoutes.get("/analytics", async (c) => {
+  const db = createDb(c.env.DB);
+  const analytics = await getAnalytics(db);
+  return c.json(ok(analytics));
 });
 
 adminRoutes.get("/assessments", async (c) => {
