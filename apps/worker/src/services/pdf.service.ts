@@ -158,29 +158,38 @@ export async function generateReportPdf(report: AssessmentReport, logoPngBytes?:
   const bold = await doc.embedFont(StandardFonts.HelveticaBold);
   const flow = new PageFlow(doc, regular, bold);
 
-  // Header: logo + product name, generated date on the right.
+  // Header: logo + company name, generated date on the right, then an
+  // agency introduction and contact details, before the report content.
   let headerX = MARGIN;
   if (logoPngBytes) {
     try {
       const logo = await doc.embedPng(logoPngBytes);
-      const size = 18;
+      const size = 20;
       flow.page.drawImage(logo, { x: MARGIN, y: flow.y - size, width: size, height: size });
       headerX = MARGIN + size + 8;
     } catch {
       // Malformed/unreachable logo asset — the report is still useful without it.
     }
   }
-  flow.page.drawText("Growth Audit", { x: headerX, y: flow.y - 14, size: 12, font: bold, color: COLOR.ink });
+  flow.page.drawText(CONTACT.companyName, { x: headerX, y: flow.y - 16, size: 16, font: bold, color: COLOR.ink });
   const dateLabel = new Date().toLocaleDateString("en-MY", { year: "numeric", month: "long", day: "numeric" });
   const dateWidth = regular.widthOfTextAtSize(dateLabel, 9);
   flow.page.drawText(dateLabel, {
     x: MARGIN + CONTENT_WIDTH - dateWidth,
-    y: flow.y - 13,
+    y: flow.y - 15,
     size: 9,
     font: regular,
     color: COLOR.inkMuted,
   });
-  flow.y -= 40;
+  flow.y -= 34;
+
+  flow.paragraph(CONTACT.introduction, { size: 9.5, color: COLOR.inkSecondary, lineHeight: 13, gap: 8 });
+  flow.text(`Email: ${CONTACT.email}    ·    Phone: ${CONTACT.phoneDisplay}`, {
+    size: 9.5,
+    color: COLOR.inkMuted,
+    gap: 6,
+  });
+
   flow.divider();
 
   // Hero: business name, overall score, status.
