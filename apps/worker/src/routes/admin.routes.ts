@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
 import { ok } from "@bhc/api";
-import { adminLoginSchema, questionInputSchema } from "@bhc/validation";
+import { adminLoginSchema, questionInputSchema, categoryInputSchema } from "@bhc/validation";
 import { createDb } from "@bhc/database";
 import type { Env } from "../env";
 import { rateLimit } from "../middleware/rate-limit";
@@ -14,6 +14,7 @@ import {
   updateQuestion,
 } from "../services/admin-questions.service";
 import { listAssessments, getAssessmentDetail } from "../services/admin-assessments.service";
+import { listCategories, createCategory, updateCategory, deleteCategory } from "../services/admin-categories.service";
 import { recordAuditLog } from "../services/audit";
 
 export const adminRoutes = new Hono<{ Bindings: Env; Variables: { admin: AdminJwtPayload } }>();
@@ -91,4 +92,50 @@ adminRoutes.get("/assessments/:id", async (c) => {
   const db = createDb(c.env.DB);
   const detail = await getAssessmentDetail(db, c.req.param("id"));
   return c.json(ok(detail));
+});
+
+adminRoutes.get("/categories", async (c) => {
+  const db = createDb(c.env.DB);
+  const categories = await listCategories(db);
+  return c.json(ok({ categories }));
+});
+
+adminRoutes.post("/categories", zValidator("json", categoryInputSchema), async (c) => {
+  const input = c.req.valid("json");
+  const db = createDb(c.env.DB);
+  const category = await createCategory(db, input);
+  await recordAuditLog(db, {
+    adminUserId: c.get("admin").sub,
+    action: "category.create",
+    entityType: "category",
+    entityId: category.id,
+  });
+  return c.json(ok(category), 201);
+});
+
+adminRoutes.put("/categories/:id", zValidator("json", categoryInputSchema), async (c) => {
+  const input = c.req.valid("json");
+  const id = c.req.param("id");
+  const db = createDb(c.env.DB);
+  const category = await updateCategory(db, id, input);
+  await recordAuditLog(db, {
+    adminUserId: c.get("admin").sub,
+    action: "category.update",
+    entityType: "category",
+    entityId: id,
+  });
+  return c.json(ok(category));
+});
+
+adminRoutes.delete("/categories/:id", async (c) => {
+  const id = c.req.param("id");
+  const db = createDb(c.env.DB);
+  await deleteCategory(db, id);
+  await recordAuditLog(db, {
+    adminUserId: c.get("admin").sub,
+    action: "category.delete",
+    entityType: "category",
+    entityId: id,
+  });
+  return c.json(ok({ deleted: true }));
 });

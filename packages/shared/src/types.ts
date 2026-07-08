@@ -101,6 +101,15 @@ export interface AdminUser {
   createdAt: string;
 }
 
+export interface AdminCategory {
+  id: string;
+  slug: string;
+  label: string;
+  sortOrder: number;
+  isActive: boolean;
+  questionCount: number;
+}
+
 export interface AdminAssessmentAnswerDetail {
   questionId: string;
   categorySlug: AssessmentCategorySlug;

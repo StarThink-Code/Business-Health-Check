@@ -1,5 +1,6 @@
 import type {
   AdminAssessmentDetail,
+  AdminCategory,
   AdminUser,
   Assessment,
   AssessmentReport,
@@ -7,6 +8,7 @@ import type {
 } from "@bhc/shared";
 import type {
   AdminLoginInput,
+  CategoryInput,
   QuestionInput,
   RecommendationRuleInput,
   StartAssessmentInput,
@@ -66,6 +68,24 @@ export interface AdminListAssessmentsResponse {
 
 // ---- Admin: GET /api/admin/assessments/:id ----
 export type AdminGetAssessmentResponse = AdminAssessmentDetail;
+
+// ---- Admin: GET /api/admin/categories ----
+export interface AdminListCategoriesResponse {
+  categories: AdminCategory[];
+}
+
+// ---- Admin: POST /api/admin/categories ----
+export type AdminCreateCategoryRequest = CategoryInput;
+export type AdminCreateCategoryResponse = AdminCategory;
+
+// ---- Admin: PUT /api/admin/categories/:id ----
+export type AdminUpdateCategoryRequest = CategoryInput;
+export type AdminUpdateCategoryResponse = AdminCategory;
+
+// ---- Admin: DELETE /api/admin/categories/:id ----
+export interface AdminDeleteCategoryResponse {
+  deleted: true;
+}
 
 // ---- Admin: recommendation rules (Module 6 / Recommendation Management) ----
 export type AdminUpsertRecommendationRuleRequest = RecommendationRuleInput;

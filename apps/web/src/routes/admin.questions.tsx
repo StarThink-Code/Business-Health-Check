@@ -4,9 +4,9 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useFieldArray, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Card } from "@bhc/ui";
-import { ASSESSMENT_CATEGORIES, CATEGORY_LABELS, type Question } from "@bhc/shared";
+import type { AdminCategory, Question } from "@bhc/shared";
 import { questionInputSchema, type QuestionInput } from "@bhc/validation";
-import type { AdminListQuestionsResponse } from "@bhc/api";
+import type { AdminListCategoriesResponse, AdminListQuestionsResponse } from "@bhc/api";
 import { AdminShell } from "../components/AdminShell";
 import { apiClient } from "../lib/api-client";
 
@@ -22,6 +22,12 @@ function AdminQuestionsPage() {
     queryKey: ["admin", "questions"],
     queryFn: () => apiClient.get<AdminListQuestionsResponse>("/api/admin/questions"),
   });
+  const { data: categoriesData } = useQuery({
+    queryKey: ["admin", "categories"],
+    queryFn: () => apiClient.get<AdminListCategoriesResponse>("/api/admin/categories"),
+  });
+  const categories = categoriesData?.categories ?? [];
+  const categoryLabel = (slug: string) => categories.find((c) => c.slug === slug)?.label ?? slug;
 
   const deleteMutation = useMutation({
     mutationFn: (id: string) => apiClient.delete(`/api/admin/questions/${id}`),
@@ -32,12 +38,24 @@ function AdminQuestionsPage() {
     <AdminShell>
       <div className="mb-6 flex items-center justify-between">
         <h1 className="text-2xl font-bold text-ink">Questions</h1>
-        <Button onClick={() => setEditing("new")}>Add question</Button>
+        <Button onClick={() => setEditing("new")} disabled={categories.length === 0}>
+          Add question
+        </Button>
       </div>
+
+      {categories.length === 0 && !isLoading && (
+        <p className="mb-4 text-sm text-ink-muted">
+          Create a category first — questions need one to belong to.
+        </p>
+      )}
 
       {editing && (
         <div className="mb-8">
-          <QuestionForm question={editing === "new" ? null : editing} onDone={() => setEditing(null)} />
+          <QuestionForm
+            question={editing === "new" ? null : editing}
+            categories={categories}
+            onDone={() => setEditing(null)}
+          />
         </div>
       )}
 
@@ -49,7 +67,7 @@ function AdminQuestionsPage() {
             <Card key={q.id} className="flex items-center justify-between !p-5">
               <div>
                 <p className="eyebrow mb-1 flex items-center gap-2">
-                  {CATEGORY_LABELS[q.categorySlug]}
+                  {categoryLabel(q.categorySlug)}
                   {!q.isActive && (
                     <span className="rounded-full bg-page px-2 py-0.5 text-ink-muted">Disabled</span>
                   )}
@@ -78,7 +96,15 @@ function AdminQuestionsPage() {
   );
 }
 
-function QuestionForm({ question, onDone }: { question: Question | null; onDone: () => void }) {
+function QuestionForm({
+  question,
+  categories,
+  onDone,
+}: {
+  question: Question | null;
+  categories: AdminCategory[];
+  onDone: () => void;
+}) {
   const queryClient = useQueryClient();
   const {
     register,
@@ -97,7 +123,7 @@ function QuestionForm({ question, onDone }: { question: Question | null; onDone:
           options: question.options.map((o) => ({ label: o.label, score: o.score, sortOrder: o.sortOrder })),
         }
       : {
-          categorySlug: ASSESSMENT_CATEGORIES[0],
+          categorySlug: categories[0]?.slug ?? "",
           prompt: "",
           sortOrder: 0,
           isActive: true,
@@ -126,9 +152,10 @@ function QuestionForm({ question, onDone }: { question: Question | null; onDone:
         <label className="block">
           <span className="mb-1.5 block text-sm font-medium text-ink">Category</span>
           <select className="input" {...register("categorySlug")}>
-            {ASSESSMENT_CATEGORIES.map((slug) => (
-              <option key={slug} value={slug}>
-                {CATEGORY_LABELS[slug]}
+            {categories.map((c) => (
+              <option key={c.slug} value={c.slug}>
+                {c.label}
+                {!c.isActive ? " (disabled)" : ""}
               </option>
             ))}
           </select>
