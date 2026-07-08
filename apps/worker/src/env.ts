@@ -7,4 +7,5 @@ export interface Env {
   TURNSTILE_SECRET_KEY: string;
   ADMIN_SESSION_TTL_SECONDS: string;
   ENVIRONMENT: string;
+  WEB_APP_URL: string;
 }

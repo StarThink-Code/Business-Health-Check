@@ -21,6 +21,7 @@ import type { BusinessInfoInput } from "@bhc/validation";
 import { newId } from "../lib/ids";
 import { loadQuestions } from "./questions.service";
 import { loadBusinessStatusThresholds } from "./scoring-config.service";
+import { generateReportPdf } from "./pdf.service";
 
 export async function createAssessment(db: Database, business: BusinessInfoInput): Promise<string> {
   const businessId = newId("biz");
@@ -106,6 +107,9 @@ export async function submitAssessment(
       overallScore,
       businessStatus: status.status,
       completedAt: new Date().toISOString(),
+      // Answers (and therefore the score) may have just changed — drop any
+      // cached PDF so the next download request regenerates it.
+      reportPdfKey: null,
     })
     .where(eq(assessments.id, input.assessmentId));
 
@@ -180,4 +184,38 @@ export async function getAssessmentReport(db: Database, assessmentId: string): P
     weaknesses: sorted.filter((c) => c.percentage < 60).slice(-3),
     recommendations,
   };
+}
+
+export async function getOrGenerateReportPdf(
+  db: Database,
+  r2: R2Bucket,
+  webAppUrl: string,
+  assessmentId: string,
+): Promise<Uint8Array> {
+  const [assessment] = await db.select().from(assessments).where(eq(assessments.id, assessmentId)).limit(1);
+  if (!assessment || assessment.status !== "completed") {
+    throw new HTTPException(404, { message: "Report not found" });
+  }
+
+  if (assessment.reportPdfKey) {
+    const cached = await r2.get(assessment.reportPdfKey);
+    if (cached) return new Uint8Array(await cached.arrayBuffer());
+  }
+
+  const report = await getAssessmentReport(db, assessmentId);
+
+  let logoBytes: ArrayBuffer | undefined;
+  try {
+    const res = await fetch(`${webAppUrl}/favicon.png`);
+    if (res.ok) logoBytes = await res.arrayBuffer();
+  } catch {
+    // Best-effort — the PDF still renders without the logo mark.
+  }
+
+  const pdfBytes = await generateReportPdf(report, logoBytes);
+  const key = `reports/${assessmentId}.pdf`;
+  await r2.put(key, pdfBytes, { httpMetadata: { contentType: "application/pdf" } });
+  await db.update(assessments).set({ reportPdfKey: key }).where(eq(assessments.id, assessmentId));
+
+  return pdfBytes;
 }

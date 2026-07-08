@@ -10,10 +10,10 @@ import {
   Legend,
 } from "chart.js";
 import { Radar } from "react-chartjs-2";
-import { Card, ProgressBar, StatusBadge, StatTile, Button, STATUS_COLOR_TOKENS } from "@bhc/ui";
+import { Card, ProgressBar, StatusBadge, StatTile, Button, buttonClassName, STATUS_COLOR_TOKENS } from "@bhc/ui";
 import { resolveBusinessStatus } from "@bhc/shared";
 import type { GetReportResponse } from "@bhc/api";
-import { apiClient } from "../lib/api-client";
+import { apiClient, apiUrl } from "../lib/api-client";
 import { PublicHeader } from "../components/PublicHeader";
 
 ChartJS.register(RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend);
@@ -66,6 +66,12 @@ function ReportPage() {
           <div className="mt-3">
             <StatusBadge status={data.businessStatus} label={data.businessStatusLabel} />
           </div>
+          <a
+            href={apiUrl(`/api/report/${assessmentId}/pdf`)}
+            className={buttonClassName("secondary", "md", "mt-5")}
+          >
+            Download PDF
+          </a>
         </Card>
 
         <Card>

@@ -2,6 +2,11 @@ import type { ApiResponse } from "@bhc/api";
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "";
 
+/** For non-JSON endpoints (e.g. PDF download links) that aren't fetched through `apiClient`. */
+export function apiUrl(path: string): string {
+  return `${BASE_URL}${path}`;
+}
+
 export class ApiError extends Error {
   constructor(
     message: string,

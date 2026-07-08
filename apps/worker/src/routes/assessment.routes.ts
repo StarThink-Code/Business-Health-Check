@@ -7,7 +7,12 @@ import type { Env } from "../env";
 import { rateLimit } from "../middleware/rate-limit";
 import { verifyTurnstileToken } from "../services/turnstile";
 import { loadQuestions } from "../services/questions.service";
-import { createAssessment, submitAssessment, getAssessmentReport } from "../services/assessment.service";
+import {
+  createAssessment,
+  submitAssessment,
+  getAssessmentReport,
+  getOrGenerateReportPdf,
+} from "../services/assessment.service";
 import { HTTPException } from "hono/http-exception";
 
 export const assessmentRoutes = new Hono<{ Bindings: Env }>();
@@ -57,3 +62,19 @@ assessmentRoutes.get("/report/:id", async (c) => {
   const report = await getAssessmentReport(db, c.req.param("id"));
   return c.json(ok(report));
 });
+
+assessmentRoutes.get(
+  "/report/:id/pdf",
+  rateLimit({ key: "report-pdf", limit: 20, windowSeconds: 60 }),
+  async (c) => {
+    const db = createDb(c.env.DB);
+    const assessmentId = c.req.param("id");
+    const pdfBytes = await getOrGenerateReportPdf(db, c.env.REPORTS, c.env.WEB_APP_URL, assessmentId);
+    return new Response(pdfBytes as BodyInit, {
+      headers: {
+        "Content-Type": "application/pdf",
+        "Content-Disposition": `attachment; filename="business-health-report-${assessmentId}.pdf"`,
+      },
+    });
+  },
+);

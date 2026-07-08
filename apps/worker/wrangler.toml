@@ -6,8 +6,7 @@ compatibility_flags = ["nodejs_compat"]
 
 # ---------------------------------------------------------------------------
 # Cloudflare resources — provisioned in the StarThink account
-# (starthinkmy@gmail.com). R2 still needs to be enabled once in the
-# dashboard before `bhc-reports` can be created; see docs/cloudflare-setup.md.
+# (starthinkmy@gmail.com). See docs/cloudflare-setup.md.
 # ---------------------------------------------------------------------------
 
 [[d1_databases]]
@@ -24,17 +23,14 @@ id = "cadfb0d34cda40a0a7dea856f60c12a1"
 binding = "RATE_LIMIT"
 id = "d7f07d0f0d0c4427a7009e3c7ad48dd3"
 
-# R2 not yet enabled on this account (dashboard → R2 → enable), and no code
-# uses it yet (PDF report generation is unbuilt). Once enabled:
-#   wrangler r2 bucket create bhc-reports
-# then uncomment:
-# [[r2_buckets]]
-# binding = "REPORTS"
-# bucket_name = "bhc-reports"
+[[r2_buckets]]
+binding = "REPORTS"
+bucket_name = "bhc-reports"
 
 [vars]
 ADMIN_SESSION_TTL_SECONDS = "28800"
 ENVIRONMENT = "development"
+WEB_APP_URL = "https://bhc-web.starthinkmy.workers.dev"
 
 # Secrets (never stored in this file — set with `wrangler secret put <NAME>`):
 #   JWT_SECRET
@@ -57,10 +53,11 @@ id = "cadfb0d34cda40a0a7dea856f60c12a1"
 binding = "RATE_LIMIT"
 id = "d7f07d0f0d0c4427a7009e3c7ad48dd3"
 
-# [[env.production.r2_buckets]]
-# binding = "REPORTS"
-# bucket_name = "bhc-reports"
+[[env.production.r2_buckets]]
+binding = "REPORTS"
+bucket_name = "bhc-reports"
 
 [env.production.vars]
 ADMIN_SESSION_TTL_SECONDS = "28800"
 ENVIRONMENT = "production"
+WEB_APP_URL = "https://bhc-web.starthinkmy.workers.dev"

@@ -4,6 +4,7 @@ export const API_ROUTES = {
   questions: "/api/questions",
   assessmentSubmit: "/api/assessment/submit",
   report: (id: string) => `/api/report/${id}`,
+  reportPdf: (id: string) => `/api/report/${id}/pdf`,
   adminLogin: "/api/admin/login",
   adminQuestions: "/api/admin/questions",
   adminQuestion: (id: string) => `/api/admin/questions/${id}`,

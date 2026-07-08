@@ -6,20 +6,21 @@ Done:
 - ✅ `wrangler login` authenticated
 - ✅ D1 database `bhc-db` created and migrated (`d4e08642-e2cd-4a6c-80a6-aa8e90da2116`)
 - ✅ KV namespaces `CACHE` and `RATE_LIMIT` created
-- ✅ Categories + default scoring bands seeded
+- ✅ R2 enabled and `bhc-reports` bucket created, bound as `REPORTS`
+- ✅ Categories + default scoring bands seeded, plus 20 sample questions
 - ✅ First admin user created (`starthinkmy@gmail.com`)
 - ✅ `JWT_SECRET` set as a Worker secret
+- ✅ `TURNSTILE_SECRET_KEY` set to Cloudflare's test key (always-pass) — see
+  "Still needed" below to swap in a real widget
 - ✅ Worker deployed: **https://bhc-worker.starthinkmy.workers.dev**
+- ✅ Web app deployed (Workers static assets): **https://bhc-web.starthinkmy.workers.dev**
 
 Still needed:
-- ⬜ Enable R2 in the dashboard, then create the `bhc-reports` bucket and
-  uncomment the `[[r2_buckets]]` blocks in `wrangler.toml` (needed once PDF
-  report generation is built — not required to use the app today).
-- ⬜ Create a Turnstile widget and set `TURNSTILE_SECRET_KEY` (see step 8
-  below) — until this is done, `/api/assessment/start` will reject all
-  submissions, since there's no secret configured to verify against.
-- ⬜ Deploy `apps/web` somewhere (Cloudflare Pages, or Workers static assets)
-  and point it at the deployed worker via `VITE_API_BASE_URL`.
+- ⬜ Create a real Turnstile widget and swap the test key for the real
+  Site Key (`apps/web` build) / Secret Key (`TURNSTILE_SECRET_KEY` on the
+  worker) — see step 8 below. Currently anyone's submission auto-passes
+  verification since it's still on Cloudflare's test key.
+- ⬜ R2 bucket is bound but unused — PDF report generation isn't built yet.
 
 The steps below are the full walkthrough, kept for reference / for setting up
 a second environment.
