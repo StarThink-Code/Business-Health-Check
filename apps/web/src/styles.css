@@ -5,11 +5,27 @@
 @source "../../../packages/ui/src";
 
 /*
- * Design tokens — sourced from the validated reference palette (blue accent,
- * fixed status colors, warm-neutral ink/surface scale). Light values are the
- * defaults; dark values override the same custom properties below, so every
- * utility built from these tokens (bg-surface, text-ink, etc.) swaps
- * automatically with the OS color scheme.
+ * Design tokens — ink/surface scale from the validated reference palette;
+ * accent is the real brand green (#5AF503). Light values are the defaults;
+ * dark values override the same custom properties below, so every utility
+ * built from these tokens (bg-surface, text-ink, etc.) swaps automatically
+ * with the OS color scheme.
+ *
+ * The brand green is very bright (high perceived luminance — green is the
+ * heaviest-weighted channel in relative luminance), so it fails as text,
+ * a border, or a fill-vs-track pair: white-on-#5AF503 is 1.45:1 and
+ * #5AF503-on-white is the same. Verified with the WCAG contrast formula
+ * (see conversation) before picking these steps:
+ *   accent-500 #5AF503  — the raw brand color: solid fills only (buttons,
+ *                          dots, bars), always paired with --color-on-accent
+ *                          text, never used as text/border itself.
+ *   accent-700 #37840b  — darkened to 4.70:1 vs white — the "can be read as
+ *                          text or a border" step, used on light surfaces.
+ *   accent-800 #2b6808  — darkened to 6.80:1 with white text — deep panel
+ *                          backgrounds (hero/CTA blocks), same in both modes.
+ * accent-text flips 700 (light) -> 500 (dark), since the raw brand green
+ * reads at 12.4:1 against our near-black dark surface — no darkening needed
+ * once the background itself is dark.
  */
 @theme {
   --font-sans: "Inter Variable", system-ui, -apple-system, "Segoe UI", sans-serif;
@@ -25,17 +41,15 @@
   --color-border: #e1e0d9;
   --color-border-strong: #c3c2b7;
 
-  --color-accent-50: #f3f8fe;
-  --color-accent-100: #cde2fb;
-  --color-accent-200: #9ec5f4;
-  --color-accent-300: #6da7ec;
-  --color-accent-400: #3987e5;
-  --color-accent-500: #2a78d6;
-  --color-accent-600: #256abf;
-  --color-accent-700: #184f95;
-  --color-accent-800: #104281;
-  --color-accent-900: #0d366b;
+  --color-accent-50: #ecfde2;
+  --color-accent-500: #5af503;
+  --color-accent-600: #51cb0b;
+  --color-accent-700: #37840b;
+  --color-accent-800: #2b6808;
   --color-accent: var(--color-accent-500);
+  --color-accent-text: var(--color-accent-700);
+  --color-accent-panel: var(--color-accent-800);
+  --color-on-accent: #0b0b0b;
   --color-accent-tint: var(--color-accent-50);
 
   /* Status hues per the reference palette. warning/serious are darkened from
@@ -65,8 +79,8 @@
     --color-border: #2c2c2a;
     --color-border-strong: #383835;
 
-    --color-accent: var(--color-accent-400);
-    --color-accent-tint: rgba(57, 135, 229, 0.15);
+    --color-accent-text: var(--color-accent-500);
+    --color-accent-tint: rgba(90, 245, 3, 0.15);
 
     --color-good-tint: rgba(12, 163, 12, 0.15);
     --color-warning-tint: rgba(250, 178, 25, 0.15);
@@ -83,7 +97,7 @@ body {
 
 @layer components {
   .input {
-    @apply block w-full rounded-lg border border-border bg-surface px-3.5 py-2.5 text-[15px] text-ink shadow-sm transition-shadow placeholder:text-ink-muted focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20;
+    @apply block w-full rounded-lg border border-border bg-surface px-3.5 py-2.5 text-[15px] text-ink shadow-sm transition-shadow placeholder:text-ink-muted focus:border-accent-text focus:outline-none focus:ring-2 focus:ring-accent/25;
   }
 
   .page-shell {

@@ -7,6 +7,7 @@ import { adminLoginSchema, type AdminLoginInput } from "@bhc/validation";
 import type { AdminLoginResponse } from "@bhc/api";
 import { apiClient } from "../lib/api-client";
 import { adminAuth } from "../lib/admin-auth";
+import logoIcon from "../assets/logo-icon.png";
 
 export const Route = createFileRoute("/admin/login")({
   component: AdminLoginPage,
@@ -33,9 +34,7 @@ function AdminLoginPage() {
     <main className="flex min-h-screen items-center justify-center bg-page px-6">
       <Card className="w-full max-w-sm">
         <div className="mb-6 flex items-center gap-2">
-          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent text-sm font-bold text-white">
-            G
-          </span>
+          <img src={logoIcon} alt="" className="h-8 w-8" />
           <h1 className="text-lg font-semibold text-ink">Admin sign in</h1>
         </div>
         <form className="space-y-4" onSubmit={handleSubmit((values) => loginMutation.mutate(values))}>

@@ -33,7 +33,10 @@ export function ProgressBar({ value, label, variant = "accent" }: ProgressBarPro
         aria-valuemax={100}
       >
         <div
-          className={`h-full rounded-full transition-[width] ${severity ? severity.fill : "bg-accent"}`}
+          // The raw brand green (accent-500) is too bright to contrast against
+          // its own tint track (1.36:1) — use accent-text, the darkened step
+          // that's already verified readable, so the fill actually reads.
+          className={`h-full rounded-full transition-[width] ${severity ? severity.fill : "bg-accent-text"}`}
           style={{ width: `${clamped}%` }}
         />
       </div>

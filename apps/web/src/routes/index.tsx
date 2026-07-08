@@ -84,15 +84,12 @@ function LandingPage() {
         </section>
 
         <section className="page-shell max-w-4xl pb-24">
-          <div className="rounded-2xl bg-accent px-8 py-12 text-center sm:px-16">
+          <div className="rounded-2xl bg-accent-panel px-8 py-12 text-center sm:px-16">
             <h2 className="text-2xl font-bold text-white">Ready to see your score?</h2>
-            <p className="mx-auto mt-2 max-w-md text-accent-100">
+            <p className="mx-auto mt-2 max-w-md text-white/80">
               Get your personalized growth report in less time than it takes to make coffee.
             </p>
-            <Link
-              to="/assessment/start"
-              className={buttonClassName("secondary", "lg", "mt-7 !bg-white !text-accent-700 hover:!bg-accent-50")}
-            >
+            <Link to="/assessment/start" className={buttonClassName("primary", "lg", "mt-7")}>
               Start your free assessment
             </Link>
           </div>
@@ -104,7 +101,7 @@ function LandingPage() {
 
 function CheckIcon() {
   return (
-    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-accent-tint text-accent">
+    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-accent-tint text-accent-text">
       <svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" aria-hidden>
         <path d="M3.5 8.5l3 3 6-7" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
       </svg>

@@ -1,6 +1,7 @@
 import { useEffect, type ReactNode } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { adminAuth } from "../lib/admin-auth";
+import logoIcon from "../assets/logo-icon.png";
 
 const NAV_ITEMS = [
   { to: "/admin", label: "Dashboard" },
@@ -27,9 +28,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
     <div className="flex min-h-screen bg-page">
       <aside className="w-64 shrink-0 border-r border-border bg-surface p-4">
         <div className="mb-6 flex items-center gap-2 px-2 py-1">
-          <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-accent text-sm font-bold text-white">
-            G
-          </span>
+          <img src={logoIcon} alt="" className="h-7 w-7" />
           <span className="text-sm font-semibold text-ink">Admin</span>
         </div>
         <nav className="flex flex-col gap-0.5">
@@ -38,7 +37,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
               key={item.to}
               to={item.to}
               activeOptions={{ exact: item.to === "/admin" }}
-              className="rounded-lg px-3 py-2 text-sm text-ink-secondary transition-colors hover:bg-page hover:text-ink [&.active]:bg-accent-tint [&.active]:font-medium [&.active]:text-accent"
+              className="rounded-lg px-3 py-2 text-sm text-ink-secondary transition-colors hover:bg-page hover:text-ink [&.active]:bg-accent-tint [&.active]:font-medium [&.active]:text-accent-text"
             >
               {item.label}
             </Link>

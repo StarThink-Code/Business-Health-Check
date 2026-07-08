@@ -45,10 +45,10 @@ function ReportPage() {
       {
         label: "Score",
         data: data.categoryScores.map((c) => c.percentage),
-        backgroundColor: "rgba(42, 120, 214, 0.1)",
-        borderColor: "#2a78d6",
+        backgroundColor: "rgba(90, 245, 3, 0.15)",
+        borderColor: "#37840b",
         borderWidth: 2,
-        pointBackgroundColor: "#2a78d6",
+        pointBackgroundColor: "#37840b",
         pointBorderColor: "#ffffff",
         pointBorderWidth: 2,
         pointRadius: 4,
@@ -128,7 +128,7 @@ function ReportPage() {
             <div className="space-y-5">
               {data.recommendations.map((r, i) => (
                 <div key={r.ruleId} className="flex gap-4">
-                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-accent-tint text-xs font-semibold text-accent">
+                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-accent-tint text-xs font-semibold text-accent-text">
                     {i + 1}
                   </span>
                   <div>
@@ -141,16 +141,12 @@ function ReportPage() {
           </Card>
         )}
 
-        <div className="rounded-2xl bg-accent px-8 py-10 text-center">
+        <div className="rounded-2xl bg-accent-panel px-8 py-10 text-center">
           <h2 className="text-xl font-bold text-white">Want help acting on this?</h2>
-          <p className="mx-auto mt-2 max-w-sm text-accent-100">
+          <p className="mx-auto mt-2 max-w-sm text-white/80">
             Book a free consultation and we'll walk through your results together.
           </p>
-          <Button
-            size="lg"
-            variant="secondary"
-            className="mt-6 !bg-white !text-accent-700 hover:!bg-accent-50"
-          >
+          <Button size="lg" className="mt-6">
             Book a consultation
           </Button>
         </div>

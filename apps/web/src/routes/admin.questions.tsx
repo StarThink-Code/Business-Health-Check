@@ -151,7 +151,7 @@ function QuestionForm({ question, onDone }: { question: Question | null; onDone:
             <input className="input" type="number" {...register("sortOrder", { valueAsNumber: true })} />
           </label>
           <label className="flex items-end gap-2 pb-2.5">
-            <input type="checkbox" className="h-4 w-4 accent-accent" {...register("isActive")} />
+            <input type="checkbox" className="h-4 w-4 accent-accent-text" {...register("isActive")} />
             <span className="text-sm font-medium text-ink">Active</span>
           </label>
         </div>

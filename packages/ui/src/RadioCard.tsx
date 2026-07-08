@@ -10,15 +10,15 @@ export function RadioCard({ name, value, label, checked, onChange }: RadioCardPr
   return (
     <label
       className={`flex cursor-pointer items-center gap-3 rounded-xl border p-4 text-sm transition-colors ${
-        checked ? "border-accent bg-accent-tint" : "border-border hover:border-border-strong"
+        checked ? "border-accent-text bg-accent-tint" : "border-border hover:border-border-strong"
       }`}
     >
       <span
         className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 ${
-          checked ? "border-accent" : "border-border-strong"
+          checked ? "border-accent-text" : "border-border-strong"
         }`}
       >
-        {checked && <span className="h-2 w-2 rounded-full bg-accent" />}
+        {checked && <span className="h-2 w-2 rounded-full bg-accent-text" />}
       </span>
       <input
         type="radio"

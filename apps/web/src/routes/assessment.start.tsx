@@ -111,7 +111,7 @@ function BusinessInfoPage() {
               </Field>
 
               <Field label="Monthly marketing budget (optional)" error={errors.marketingBudget?.message}>
-                <input className="input" {...register("marketingBudget")} placeholder="e.g. $1,000–$5,000" />
+                <input className="input" {...register("marketingBudget")} placeholder="e.g. RM1,000–RM5,000" />
               </Field>
             </div>
 
