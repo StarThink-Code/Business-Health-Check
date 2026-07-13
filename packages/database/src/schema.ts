@@ -53,11 +53,10 @@ export const questionOptions = sqliteTable(
 export const businesses = sqliteTable("businesses", {
   id: id(),
   name: text("name").notNull(),
+  email: text("email").notNull(),
   industry: text("industry").notNull(),
   website: text("website"),
   country: text("country").notNull(),
-  teamSize: text("team_size").notNull(),
-  businessAge: text("business_age").notNull(),
   marketingBudget: text("marketing_budget"),
   createdAt: timestamp("created_at"),
 });

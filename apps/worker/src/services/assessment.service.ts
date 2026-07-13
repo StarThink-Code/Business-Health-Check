@@ -28,11 +28,10 @@ export async function createAssessment(db: Database, business: BusinessInfoInput
   await db.insert(businesses).values({
     id: businessId,
     name: business.businessName,
+    email: business.email,
     industry: business.industry,
     website: business.website || null,
     country: business.country,
-    teamSize: business.teamSize,
-    businessAge: business.businessAge,
     marketingBudget: business.marketingBudget || null,
   });
 
@@ -168,11 +167,10 @@ export async function getAssessmentReport(db: Database, assessmentId: string): P
     business: {
       id: business.id,
       name: business.name,
+      email: business.email,
       industry: business.industry,
       website: business.website,
       country: business.country,
-      teamSize: business.teamSize,
-      businessAge: business.businessAge,
       marketingBudget: business.marketingBudget,
       createdAt: business.createdAt,
     },

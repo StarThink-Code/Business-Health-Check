@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Turnstile } from "@marsidev/react-turnstile";
 import { Button, Card } from "@bhc/ui";
-import { businessInfoSchema, businessAgeOptions, teamSizeOptions } from "@bhc/validation";
+import { businessInfoSchema } from "@bhc/validation";
 import { z } from "zod";
 import { apiClient } from "../lib/api-client";
 import type { StartAssessmentResponse } from "@bhc/api";
@@ -19,13 +19,6 @@ const formSchema = businessInfoSchema.extend({
   turnstileToken: z.string().min(1, "Please complete the verification"),
 });
 type FormValues = z.infer<typeof formSchema>;
-
-const BUSINESS_AGE_LABELS: Record<(typeof businessAgeOptions)[number], string> = {
-  less_than_1_year: "Less than 1 year",
-  "1_3_years": "1–3 years",
-  "4_10_years": "4–10 years",
-  "10_plus_years": "10+ years",
-};
 
 function BusinessInfoPage() {
   const navigate = useNavigate();
@@ -41,11 +34,10 @@ function BusinessInfoPage() {
       apiClient.post<StartAssessmentResponse>("/api/assessment/start", {
         business: {
           businessName: values.businessName,
+          email: values.email,
           industry: values.industry,
           website: values.website,
           country: values.country,
-          teamSize: values.teamSize,
-          businessAge: values.businessAge,
           marketingBudget: values.marketingBudget,
         },
         turnstileToken: values.turnstileToken,
@@ -65,8 +57,12 @@ function BusinessInfoPage() {
 
         <Card>
           <form className="space-y-5" onSubmit={handleSubmit((values) => startMutation.mutate(values))}>
-            <Field label="Business name" error={errors.businessName?.message}>
+            <Field label="Name" error={errors.businessName?.message}>
               <input className="input" {...register("businessName")} />
+            </Field>
+
+            <Field label="Email ID" error={errors.email?.message}>
+              <input className="input" type="email" {...register("email")} placeholder="you@example.com" />
             </Field>
 
             <Field label="Industry" error={errors.industry?.message}>
@@ -78,36 +74,8 @@ function BusinessInfoPage() {
             </Field>
 
             <div className="grid gap-5 sm:grid-cols-2">
-              <Field label="Country" error={errors.country?.message}>
+              <Field label="Location" error={errors.country?.message}>
                 <input className="input" {...register("country")} />
-              </Field>
-
-              <Field label="Team size" error={errors.teamSize?.message}>
-                <select className="input" {...register("teamSize")} defaultValue="">
-                  <option value="" disabled>
-                    Select team size
-                  </option>
-                  {teamSizeOptions.map((size) => (
-                    <option key={size} value={size}>
-                      {size}
-                    </option>
-                  ))}
-                </select>
-              </Field>
-            </div>
-
-            <div className="grid gap-5 sm:grid-cols-2">
-              <Field label="Business age" error={errors.businessAge?.message}>
-                <select className="input" {...register("businessAge")} defaultValue="">
-                  <option value="" disabled>
-                    Select business age
-                  </option>
-                  {businessAgeOptions.map((age) => (
-                    <option key={age} value={age}>
-                      {BUSINESS_AGE_LABELS[age]}
-                    </option>
-                  ))}
-                </select>
               </Field>
 
               <Field label="Monthly marketing budget (optional)" error={errors.marketingBudget?.message}>

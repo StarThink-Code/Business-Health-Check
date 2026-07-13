@@ -16,13 +16,6 @@ function titleCaseStatus(status: string): string {
     .join(" ");
 }
 
-const BUSINESS_AGE_LABELS: Record<string, string> = {
-  less_than_1_year: "Less than 1 year",
-  "1_3_years": "1–3 years",
-  "4_10_years": "4–10 years",
-  "10_plus_years": "10+ years",
-};
-
 function AdminAssessmentDetailPage() {
   const { assessmentId } = Route.useParams();
 
@@ -86,15 +79,11 @@ function AdminAssessmentDetailPage() {
           <Card>
             <h2 className="mb-4 text-lg font-semibold text-ink">Submitted business information</h2>
             <dl className="grid grid-cols-2 gap-x-6 gap-y-4 text-sm sm:grid-cols-3">
-              <Field label="Business name" value={data.business.name} />
+              <Field label="Name" value={data.business.name} />
+              <Field label="Email ID" value={data.business.email} />
               <Field label="Industry" value={data.business.industry} />
               <Field label="Website" value={data.business.website ?? "—"} />
-              <Field label="Country" value={data.business.country} />
-              <Field label="Team size" value={data.business.teamSize} />
-              <Field
-                label="Business age"
-                value={BUSINESS_AGE_LABELS[data.business.businessAge] ?? data.business.businessAge}
-              />
+              <Field label="Location" value={data.business.country} />
               <Field label="Marketing budget" value={data.business.marketingBudget ?? "—"} />
               <Field label="Started" value={new Date(data.assessment.startedAt).toLocaleString()} />
               <Field

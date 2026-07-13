@@ -4,11 +4,10 @@ import type { BusinessStatus } from "./business-status";
 export interface Business {
   id: string;
   name: string;
+  email: string;
   industry: string;
   website: string | null;
   country: string;
-  teamSize: string;
-  businessAge: string;
   marketingBudget: string | null;
   createdAt: string;
 }

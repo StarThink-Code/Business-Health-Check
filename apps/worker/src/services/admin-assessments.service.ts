@@ -73,11 +73,10 @@ export async function getAssessmentDetail(db: Database, assessmentId: string): P
     business: {
       id: business.id,
       name: business.name,
+      email: business.email,
       industry: business.industry,
       website: business.website,
       country: business.country,
-      teamSize: business.teamSize,
-      businessAge: business.businessAge,
       marketingBudget: business.marketingBudget,
       createdAt: business.createdAt,
     },
