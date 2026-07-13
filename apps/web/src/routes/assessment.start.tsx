@@ -9,7 +9,6 @@ import { businessInfoSchema } from "@bhc/validation";
 import { z } from "zod";
 import { apiClient } from "../lib/api-client";
 import type { StartAssessmentResponse } from "@bhc/api";
-import { PublicHeader } from "../components/PublicHeader";
 
 export const Route = createFileRoute("/assessment/start")({
   component: BusinessInfoPage,
@@ -48,60 +47,57 @@ function BusinessInfoPage() {
   });
 
   return (
-    <>
-      <PublicHeader />
-      <main className="page-shell py-14 sm:py-20">
-        <p className="eyebrow mb-2">Step 1 of 2</p>
-        <h1 className="mb-2 text-2xl font-bold text-ink sm:text-3xl">Tell us about your business</h1>
-        <p className="mb-8 text-ink-secondary">This helps us tailor your report. It takes less than a minute.</p>
+    <main className="page-shell py-14 sm:py-20">
+      <p className="eyebrow mb-2">Step 1 of 2</p>
+      <h1 className="mb-2 text-2xl font-bold text-ink sm:text-3xl">Tell us about your business</h1>
+      <p className="mb-8 text-ink-secondary">This helps us tailor your report. It takes less than a minute.</p>
 
-        <Card>
-          <form className="space-y-5" onSubmit={handleSubmit((values) => startMutation.mutate(values))}>
-            <Field label="Name" error={errors.businessName?.message}>
-              <input className="input" {...register("businessName")} />
+      <Card>
+        <form className="space-y-5" onSubmit={handleSubmit((values) => startMutation.mutate(values))}>
+          <Field label="Name" error={errors.businessName?.message}>
+            <input className="input" {...register("businessName")} />
+          </Field>
+
+          <Field label="Email ID" error={errors.email?.message}>
+            <input className="input" type="email" {...register("email")} placeholder="you@example.com" />
+          </Field>
+
+          <Field label="Industry" error={errors.industry?.message}>
+            <input className="input" {...register("industry")} placeholder="e.g. E-commerce, Healthcare" />
+          </Field>
+
+          <Field label="Website (optional)" error={errors.website?.message}>
+            <input className="input" {...register("website")} placeholder="https://example.com" />
+          </Field>
+
+          <div className="grid gap-5 sm:grid-cols-2">
+            <Field label="Location" error={errors.country?.message}>
+              <input className="input" {...register("country")} />
             </Field>
 
-            <Field label="Email ID" error={errors.email?.message}>
-              <input className="input" type="email" {...register("email")} placeholder="you@example.com" />
+            <Field label="Monthly marketing budget (optional)" error={errors.marketingBudget?.message}>
+              <input className="input" {...register("marketingBudget")} placeholder="e.g. RM1,000–RM5,000" />
             </Field>
+          </div>
 
-            <Field label="Industry" error={errors.industry?.message}>
-              <input className="input" {...register("industry")} placeholder="e.g. E-commerce, Healthcare" />
-            </Field>
+          {import.meta.env.VITE_TURNSTILE_SITE_KEY && (
+            <Turnstile
+              siteKey={import.meta.env.VITE_TURNSTILE_SITE_KEY}
+              onSuccess={(token) => setValue("turnstileToken", token, { shouldValidate: true })}
+            />
+          )}
+          {errors.turnstileToken && <p className="text-sm text-critical">{errors.turnstileToken.message}</p>}
 
-            <Field label="Website (optional)" error={errors.website?.message}>
-              <input className="input" {...register("website")} placeholder="https://example.com" />
-            </Field>
+          {startMutation.isError && (
+            <p className="text-sm text-critical">{(startMutation.error as Error).message}</p>
+          )}
 
-            <div className="grid gap-5 sm:grid-cols-2">
-              <Field label="Location" error={errors.country?.message}>
-                <input className="input" {...register("country")} />
-              </Field>
-
-              <Field label="Monthly marketing budget (optional)" error={errors.marketingBudget?.message}>
-                <input className="input" {...register("marketingBudget")} placeholder="e.g. RM1,000–RM5,000" />
-              </Field>
-            </div>
-
-            {import.meta.env.VITE_TURNSTILE_SITE_KEY && (
-              <Turnstile
-                siteKey={import.meta.env.VITE_TURNSTILE_SITE_KEY}
-                onSuccess={(token) => setValue("turnstileToken", token, { shouldValidate: true })}
-              />
-            )}
-            {errors.turnstileToken && <p className="text-sm text-critical">{errors.turnstileToken.message}</p>}
-
-            {startMutation.isError && (
-              <p className="text-sm text-critical">{(startMutation.error as Error).message}</p>
-            )}
-
-            <Button type="submit" size="lg" disabled={isSubmitting || startMutation.isPending} className="w-full">
-              {startMutation.isPending ? "Starting…" : "Continue to questionnaire"}
-            </Button>
-          </form>
-        </Card>
-      </main>
-    </>
+          <Button type="submit" size="lg" disabled={isSubmitting || startMutation.isPending} className="w-full">
+            {startMutation.isPending ? "Starting…" : "Continue to questionnaire"}
+          </Button>
+        </form>
+      </Card>
+    </main>
   );
 }
 

@@ -14,7 +14,6 @@ import { Card, ProgressBar, StatusBadge, StatTile, buttonClassName, STATUS_COLOR
 import { resolveBusinessStatus, CONTACT } from "@bhc/shared";
 import type { GetReportResponse } from "@bhc/api";
 import { apiClient, apiUrl } from "../lib/api-client";
-import { PublicHeader } from "../components/PublicHeader";
 
 ChartJS.register(RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend);
 
@@ -61,113 +60,110 @@ function ReportPage() {
   };
 
   return (
-    <>
-      <PublicHeader />
-      <main className="page-shell max-w-3xl space-y-6 py-12 sm:py-16">
-        <Card className="flex flex-col items-center">
-          <p className="eyebrow">{data.business.name}</p>
-          <StatTile label="Business health score" value={Math.round(data.overallScore)} valueClassName={statusColor.text} />
-          <div className="mt-3">
-            <StatusBadge status={data.businessStatus} label={data.businessStatusLabel} />
-          </div>
-          <a
-            href={apiUrl(`/api/report/${assessmentId}/pdf`)}
-            className={buttonClassName("secondary", "md", "mt-5")}
-          >
-            Download PDF
-          </a>
-        </Card>
-
-        <Card>
-          <h2 className="mb-6 text-lg font-semibold text-ink">Category scores</h2>
-          <div className="grid gap-10 md:grid-cols-2 md:items-center">
-            <div className="mx-auto h-80 w-full max-w-sm">
-              <Radar
-                data={radarData}
-                options={{
-                  maintainAspectRatio: false,
-                  plugins: { legend: { display: false } },
-                  scales: {
-                    r: {
-                      min: 0,
-                      max: 100,
-                      ticks: { display: false, stepSize: 25 },
-                      grid: { color: "rgba(137,135,129,0.25)" },
-                      angleLines: { color: "rgba(137,135,129,0.25)" },
-                      pointLabels: { color: MUTED, font: { size: 11 } },
-                    },
-                  },
-                }}
-              />
-            </div>
-            <div className="space-y-4">
-              {data.categoryScores.map((c) => (
-                <ProgressBar key={c.categorySlug} label={c.label} value={c.percentage} variant="severity" />
-              ))}
-            </div>
-          </div>
-        </Card>
-
-        <div className="grid gap-6 sm:grid-cols-2">
-          {data.strengths.length > 0 && (
-            <Card>
-              <h2 className="mb-4 text-lg font-semibold text-ink">Strengths</h2>
-              <ul className="space-y-3">
-                {data.strengths.map((s) => (
-                  <ScoreRow key={s.categorySlug} label={s.label} percentage={s.percentage} />
-                ))}
-              </ul>
-            </Card>
-          )}
-
-          {data.weaknesses.length > 0 && (
-            <Card>
-              <h2 className="mb-4 text-lg font-semibold text-ink">Improvement priorities</h2>
-              <ul className="space-y-3">
-                {data.weaknesses.map((w) => (
-                  <ScoreRow key={w.categorySlug} label={w.label} percentage={w.percentage} />
-                ))}
-              </ul>
-            </Card>
-          )}
+    <main className="page-shell max-w-3xl space-y-6 py-12 sm:py-16">
+      <Card className="flex flex-col items-center">
+        <p className="eyebrow">{data.business.name}</p>
+        <StatTile label="Business health score" value={Math.round(data.overallScore)} valueClassName={statusColor.text} />
+        <div className="mt-3">
+          <StatusBadge status={data.businessStatus} label={data.businessStatusLabel} />
         </div>
+        <a
+          href={apiUrl(`/api/report/${assessmentId}/pdf`)}
+          className={buttonClassName("secondary", "md", "mt-5")}
+        >
+          Download PDF
+        </a>
+      </Card>
 
-        {data.recommendations.length > 0 && (
+      <Card>
+        <h2 className="mb-6 text-lg font-semibold text-ink">Category scores</h2>
+        <div className="grid gap-10 md:grid-cols-2 md:items-center">
+          <div className="mx-auto h-80 w-full max-w-sm">
+            <Radar
+              data={radarData}
+              options={{
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                  r: {
+                    min: 0,
+                    max: 100,
+                    ticks: { display: false, stepSize: 25 },
+                    grid: { color: "rgba(137,135,129,0.25)" },
+                    angleLines: { color: "rgba(137,135,129,0.25)" },
+                    pointLabels: { color: MUTED, font: { size: 11 } },
+                  },
+                },
+              }}
+            />
+          </div>
+          <div className="space-y-4">
+            {data.categoryScores.map((c) => (
+              <ProgressBar key={c.categorySlug} label={c.label} value={c.percentage} variant="severity" />
+            ))}
+          </div>
+        </div>
+      </Card>
+
+      <div className="grid gap-6 sm:grid-cols-2">
+        {data.strengths.length > 0 && (
           <Card>
-            <h2 className="mb-5 text-lg font-semibold text-ink">Recommendations</h2>
-            <div className="space-y-5">
-              {data.recommendations.map((r, i) => (
-                <div key={r.ruleId} className="flex gap-4">
-                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-accent-tint text-xs font-semibold text-accent-text">
-                    {i + 1}
-                  </span>
-                  <div>
-                    <p className="font-medium text-ink">{r.title}</p>
-                    <p className="mt-0.5 text-sm text-ink-secondary">{r.description}</p>
-                  </div>
-                </div>
+            <h2 className="mb-4 text-lg font-semibold text-ink">Strengths</h2>
+            <ul className="space-y-3">
+              {data.strengths.map((s) => (
+                <ScoreRow key={s.categorySlug} label={s.label} percentage={s.percentage} />
               ))}
-            </div>
+            </ul>
           </Card>
         )}
 
-        <div className="rounded-2xl bg-accent-panel px-8 py-10 text-center">
-          <h2 className="text-xl font-bold text-white">Want help acting on this?</h2>
-          <p className="mx-auto mt-2 max-w-sm text-white/80">
-            Book a free consultation and we'll walk through your results together.
-          </p>
-          <a
-            href={whatsappUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={buttonClassName("primary", "lg", "mt-6")}
-          >
-            <WhatsAppIcon />
-            Book a consultation on WhatsApp
-          </a>
-        </div>
-      </main>
-    </>
+        {data.weaknesses.length > 0 && (
+          <Card>
+            <h2 className="mb-4 text-lg font-semibold text-ink">Improvement priorities</h2>
+            <ul className="space-y-3">
+              {data.weaknesses.map((w) => (
+                <ScoreRow key={w.categorySlug} label={w.label} percentage={w.percentage} />
+              ))}
+            </ul>
+          </Card>
+        )}
+      </div>
+
+      {data.recommendations.length > 0 && (
+        <Card>
+          <h2 className="mb-5 text-lg font-semibold text-ink">Recommendations</h2>
+          <div className="space-y-5">
+            {data.recommendations.map((r, i) => (
+              <div key={r.ruleId} className="flex gap-4">
+                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-accent-tint text-xs font-semibold text-accent-text">
+                  {i + 1}
+                </span>
+                <div>
+                  <p className="font-medium text-ink">{r.title}</p>
+                  <p className="mt-0.5 text-sm text-ink-secondary">{r.description}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </Card>
+      )}
+
+      <div className="rounded-2xl bg-accent-panel px-8 py-10 text-center">
+        <h2 className="text-xl font-bold text-white">Want help acting on this?</h2>
+        <p className="mx-auto mt-2 max-w-sm text-white/80">
+          Book a free consultation and we'll walk through your results together.
+        </p>
+        <a
+          href={whatsappUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={buttonClassName("primary", "lg", "mt-6")}
+        >
+          <WhatsAppIcon />
+          Book a consultation on WhatsApp
+        </a>
+      </div>
+    </main>
   );
 }
 
