@@ -49,12 +49,20 @@ export function calculateCategoryScores(
   return scores;
 }
 
-/** Overall score = average of category percentages (categories with no active questions are excluded). */
+/**
+ * Overall score = total points earned across every category ÷ total points
+ * possible, as a percentage — not an average of per-category percentages.
+ * This matters whenever categories carry different point scales (e.g. a
+ * 0-3 question next to several 0-2 questions): summing raw points naturally
+ * gives the higher-scale category more influence, matching how a plain
+ * "add up the points, divide by the max" scoring sheet works.
+ */
 export function calculateOverallScore(categoryScores: CategoryScore[]): number {
   const scored = categoryScores.filter((c) => c.pointsPossible > 0);
   if (scored.length === 0) return 0;
-  const total = scored.reduce((sum, c) => sum + c.percentage, 0);
-  return roundScore(total / scored.length);
+  const totalEarned = scored.reduce((sum, c) => sum + c.pointsEarned, 0);
+  const totalPossible = scored.reduce((sum, c) => sum + c.pointsPossible, 0);
+  return roundScore((totalEarned / totalPossible) * 100);
 }
 
 function roundScore(value: number): number {

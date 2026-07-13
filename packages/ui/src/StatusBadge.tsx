@@ -8,11 +8,9 @@ interface StatusStyle {
 }
 
 const STATUS_STYLES: Record<BusinessStatus, StatusStyle> = {
-  excellent: { text: "text-good", tint: "bg-good-tint", icon: "check" },
-  very_good: { text: "text-good", tint: "bg-good-tint", icon: "dot" },
-  good: { text: "text-warning", tint: "bg-warning-tint", icon: "dot" },
-  needs_improvement: { text: "text-serious", tint: "bg-serious-tint", icon: "warning" },
-  critical: { text: "text-critical", tint: "bg-critical-tint", icon: "cross" },
+  strong_performer: { text: "text-good", tint: "bg-good-tint", icon: "check" },
+  on_the_right_track: { text: "text-warning", tint: "bg-warning-tint", icon: "dot" },
+  just_getting_started: { text: "text-critical", tint: "bg-critical-tint", icon: "warning" },
 };
 
 const ICONS: Record<StatusStyle["icon"], ReactElement> = {

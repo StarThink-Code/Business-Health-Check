@@ -33,14 +33,11 @@ const COLOR = {
 
 function statusColor(status: AssessmentReport["businessStatus"]): { text: RGB; tint: RGB } {
   switch (status) {
-    case "excellent":
-    case "very_good":
+    case "strong_performer":
       return { text: COLOR.good, tint: COLOR.goodTint };
-    case "good":
+    case "on_the_right_track":
       return { text: COLOR.warning, tint: COLOR.warningTint };
-    case "needs_improvement":
-      return { text: COLOR.serious, tint: COLOR.seriousTint };
-    case "critical":
+    case "just_getting_started":
       return { text: COLOR.critical, tint: COLOR.criticalTint };
   }
 }

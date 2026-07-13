@@ -9,8 +9,8 @@ export const Route = createFileRoute("/")({
 
 const BENEFITS = [
   {
-    title: "10 growth categories scored",
-    description: "Website, SEO, marketing, sales, and more — measured on the same scale.",
+    title: "7 social media health categories scored",
+    description: "Presence, content, engagement, ads, website, leads, and overall impact.",
   },
   {
     title: "A clear business health status",
@@ -21,7 +21,7 @@ const BENEFITS = [
     description: "Know exactly which weak spots to fix first for the biggest impact.",
   },
   {
-    title: "8-10 minutes, done",
+    title: "2-3 minutes, done",
     description: "A structured questionnaire, not a sales call in disguise.",
   },
 ];
@@ -44,7 +44,7 @@ function LandingPage() {
             <Link to="/assessment/start" className={buttonClassName("primary", "lg")}>
               Start your free assessment
             </Link>
-            <span className="text-sm text-ink-muted">No credit card · Takes ~8 minutes</span>
+            <span className="text-sm text-ink-muted">No credit card · Takes ~2 minutes</span>
           </div>
         </section>
 

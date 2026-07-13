@@ -1,9 +1,7 @@
 export const BUSINESS_STATUSES = [
-  "excellent",
-  "very_good",
-  "good",
-  "needs_improvement",
-  "critical",
+  "strong_performer",
+  "on_the_right_track",
+  "just_getting_started",
 ] as const;
 
 export type BusinessStatus = (typeof BUSINESS_STATUSES)[number];
@@ -21,13 +19,12 @@ export interface BusinessStatusThreshold {
  * Default thresholds, used to seed the `scoring_config` table and as a
  * fallback if the admin has not customized them. Admins can override ranges
  * via the admin panel; the worker always reads from the DB first.
+ * Currently the client's 3-tier "Social Media Health Check" result bands.
  */
 export const DEFAULT_BUSINESS_STATUS_THRESHOLDS: BusinessStatusThreshold[] = [
-  { status: "excellent", label: "Excellent", minScore: 90, maxScore: 100 },
-  { status: "very_good", label: "Very Good", minScore: 75, maxScore: 89 },
-  { status: "good", label: "Good", minScore: 60, maxScore: 74 },
-  { status: "needs_improvement", label: "Needs Improvement", minScore: 40, maxScore: 59 },
-  { status: "critical", label: "Critical", minScore: 0, maxScore: 39 },
+  { status: "strong_performer", label: "Strong Performer", minScore: 71, maxScore: 100 },
+  { status: "on_the_right_track", label: "On The Right Track", minScore: 41, maxScore: 70 },
+  { status: "just_getting_started", label: "Just Getting Started", minScore: 0, maxScore: 40 },
 ];
 
 export function resolveBusinessStatus(
