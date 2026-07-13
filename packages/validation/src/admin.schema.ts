@@ -52,6 +52,20 @@ export const categoryInputSchema = z.object({
 });
 export type CategoryInput = z.infer<typeof categoryInputSchema>;
 
+export const createAdminUserSchema = z.object({
+  email: z.string().trim().email(),
+  password: z.string().min(8),
+  name: z.string().trim().min(1).max(100),
+});
+export type CreateAdminUserInput = z.infer<typeof createAdminUserSchema>;
+
+export const updateAdminUserSchema = z.object({
+  name: z.string().trim().min(1).max(100),
+  // Leave blank to keep the current password.
+  password: z.union([z.string().min(8), z.literal("")]).optional(),
+});
+export type UpdateAdminUserInput = z.infer<typeof updateAdminUserSchema>;
+
 export const businessStatusThresholdInputSchema = z
   .array(
     z.object({

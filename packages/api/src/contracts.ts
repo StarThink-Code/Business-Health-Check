@@ -11,10 +11,12 @@ import type {
 import type {
   AdminLoginInput,
   CategoryInput,
+  CreateAdminUserInput,
   QuestionInput,
   RecommendationRuleInput,
   StartAssessmentInput,
   SubmitAssessmentInput,
+  UpdateAdminUserInput,
 } from "@bhc/validation";
 
 // ---- Public: POST /api/assessment/start ----
@@ -107,5 +109,23 @@ export type AdminUpdateRecommendationRuleResponse = RecommendationRule;
 
 // ---- Admin: DELETE /api/admin/recommendations/:id ----
 export interface AdminDeleteRecommendationRuleResponse {
+  deleted: true;
+}
+
+// ---- Admin: GET /api/admin/users ----
+export interface AdminListUsersResponse {
+  users: AdminUser[];
+}
+
+// ---- Admin: POST /api/admin/users ----
+export type AdminCreateUserRequest = CreateAdminUserInput;
+export type AdminCreateUserResponse = AdminUser;
+
+// ---- Admin: PUT /api/admin/users/:id ----
+export type AdminUpdateUserRequest = UpdateAdminUserInput;
+export type AdminUpdateUserResponse = AdminUser;
+
+// ---- Admin: DELETE /api/admin/users/:id ----
+export interface AdminDeleteUserResponse {
   deleted: true;
 }

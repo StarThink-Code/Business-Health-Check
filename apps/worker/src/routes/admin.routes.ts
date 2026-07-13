@@ -6,6 +6,8 @@ import {
   questionInputSchema,
   categoryInputSchema,
   recommendationRuleInputSchema,
+  createAdminUserSchema,
+  updateAdminUserSchema,
 } from "@bhc/validation";
 import { createDb } from "@bhc/database";
 import type { Env } from "../env";
@@ -27,6 +29,12 @@ import {
   updateRecommendationRule,
   deleteRecommendationRule,
 } from "../services/admin-recommendations.service";
+import {
+  listAdminUsers,
+  createAdminUser,
+  updateAdminUser,
+  deleteAdminUser,
+} from "../services/admin-users.service";
 import { recordAuditLog } from "../services/audit";
 
 export const adminRoutes = new Hono<{ Bindings: Env; Variables: { admin: AdminJwtPayload } }>();
@@ -199,6 +207,52 @@ adminRoutes.delete("/recommendations/:id", async (c) => {
     adminUserId: c.get("admin").sub,
     action: "recommendation.delete",
     entityType: "recommendation_rule",
+    entityId: id,
+  });
+  return c.json(ok({ deleted: true }));
+});
+
+adminRoutes.get("/users", async (c) => {
+  const db = createDb(c.env.DB);
+  const users = await listAdminUsers(db);
+  return c.json(ok({ users }));
+});
+
+adminRoutes.post("/users", zValidator("json", createAdminUserSchema), async (c) => {
+  const input = c.req.valid("json");
+  const db = createDb(c.env.DB);
+  const user = await createAdminUser(db, input);
+  await recordAuditLog(db, {
+    adminUserId: c.get("admin").sub,
+    action: "admin_user.create",
+    entityType: "admin_user",
+    entityId: user.id,
+  });
+  return c.json(ok(user), 201);
+});
+
+adminRoutes.put("/users/:id", zValidator("json", updateAdminUserSchema), async (c) => {
+  const input = c.req.valid("json");
+  const id = c.req.param("id");
+  const db = createDb(c.env.DB);
+  const user = await updateAdminUser(db, id, input);
+  await recordAuditLog(db, {
+    adminUserId: c.get("admin").sub,
+    action: "admin_user.update",
+    entityType: "admin_user",
+    entityId: id,
+  });
+  return c.json(ok(user));
+});
+
+adminRoutes.delete("/users/:id", async (c) => {
+  const id = c.req.param("id");
+  const db = createDb(c.env.DB);
+  await deleteAdminUser(db, id, c.get("admin").sub);
+  await recordAuditLog(db, {
+    adminUserId: c.get("admin").sub,
+    action: "admin_user.delete",
+    entityType: "admin_user",
     entityId: id,
   });
   return c.json(ok({ deleted: true }));

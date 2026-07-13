@@ -15,4 +15,6 @@ export const API_ROUTES = {
   adminRecommendations: "/api/admin/recommendations",
   adminRecommendation: (id: string) => `/api/admin/recommendations/${id}`,
   adminAnalytics: "/api/admin/analytics",
+  adminUsers: "/api/admin/users",
+  adminUser: (id: string) => `/api/admin/users/${id}`,
 } as const;
