@@ -19,6 +19,9 @@ const formSchema = businessInfoSchema.extend({
 });
 type FormValues = z.infer<typeof formSchema>;
 
+// StarThink's main site — a separate deployment. Update if it moves to a real domain.
+const MAIN_SITE_URL = "https://website-code-bik.pages.dev";
+
 function BusinessInfoPage() {
   const navigate = useNavigate();
   const {
@@ -48,6 +51,15 @@ function BusinessInfoPage() {
 
   return (
     <main className="page-shell py-14 sm:py-20">
+      <div className="mb-6 flex justify-end">
+        <a
+          href={MAIN_SITE_URL}
+          className="inline-flex items-center gap-1.5 text-sm font-medium text-ink-secondary transition-colors hover:text-ink"
+        >
+          <BackArrowIcon />
+          Back to Website
+        </a>
+      </div>
       <p className="eyebrow mb-2">Step 1 of 2</p>
       <h1 className="mb-2 text-2xl font-bold text-ink sm:text-3xl">Tell us about your business</h1>
       <p className="mb-8 text-ink-secondary">This helps us tailor your report. It takes less than a minute.</p>
@@ -98,6 +110,14 @@ function BusinessInfoPage() {
         </form>
       </Card>
     </main>
+  );
+}
+
+function BackArrowIcon() {
+  return (
+    <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" aria-hidden>
+      <path d="M9.5 3.5L4 8l5.5 4.5M4.5 8h8" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
   );
 }
 
