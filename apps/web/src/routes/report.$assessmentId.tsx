@@ -14,6 +14,7 @@ import { Card, ProgressBar, StatusBadge, StatTile, buttonClassName, STATUS_COLOR
 import { resolveBusinessStatus, CONTACT } from "@bhc/shared";
 import type { GetReportResponse } from "@bhc/api";
 import { apiClient, apiUrl } from "../lib/api-client";
+import { BackToWebsiteLink } from "../components/BackToWebsiteLink";
 
 ChartJS.register(RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend);
 
@@ -61,6 +62,9 @@ function ReportPage() {
 
   return (
     <main className="page-shell max-w-3xl space-y-6 py-12 sm:py-16">
+      <div className="flex justify-end">
+        <BackToWebsiteLink className="text-ink-secondary hover:text-ink" />
+      </div>
       <Card className="flex flex-col items-center">
         <p className="eyebrow">{data.business.name}</p>
         <StatTile label="Business health score" value={Math.round(data.overallScore)} valueClassName={statusColor.text} />

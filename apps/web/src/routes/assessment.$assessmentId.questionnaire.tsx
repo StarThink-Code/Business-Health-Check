@@ -5,6 +5,7 @@ import { Button, Card, ProgressBar, RadioCard } from "@bhc/ui";
 import { CATEGORY_LABELS, type AssessmentCategorySlug } from "@bhc/shared";
 import type { GetQuestionsResponse, SubmitAssessmentResponse } from "@bhc/api";
 import { apiClient } from "../lib/api-client";
+import { BackToWebsiteLink } from "../components/BackToWebsiteLink";
 
 export const Route = createFileRoute("/assessment/$assessmentId/questionnaire")({
   component: QuestionnairePage,
@@ -59,6 +60,9 @@ function QuestionnairePage() {
 
   return (
     <main className="page-shell py-14 sm:py-20">
+      <div className="mb-6 flex justify-end">
+        <BackToWebsiteLink className="text-ink-secondary hover:text-ink" />
+      </div>
       <div className="mb-8 space-y-3">
         <div className="flex items-center justify-between text-sm">
           <span className="font-medium text-ink">

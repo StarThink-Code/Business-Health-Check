@@ -10,6 +10,7 @@ import { z } from "zod";
 import { apiClient } from "../lib/api-client";
 import type { StartAssessmentResponse } from "@bhc/api";
 import bgAbout from "../assets/bg-about.jpg";
+import { BackToWebsiteLink } from "../components/BackToWebsiteLink";
 
 export const Route = createFileRoute("/assessment/start")({
   component: BusinessInfoPage,
@@ -19,9 +20,6 @@ const formSchema = businessInfoSchema.extend({
   turnstileToken: z.string().min(1, "Please complete the verification"),
 });
 type FormValues = z.infer<typeof formSchema>;
-
-// StarThink's main site — a separate deployment. Update if it moves to a real domain.
-const MAIN_SITE_URL = "https://website-code-bik.pages.dev";
 
 function BusinessInfoPage() {
   const navigate = useNavigate();
@@ -57,13 +55,7 @@ function BusinessInfoPage() {
     >
       <div className="page-shell py-14 sm:py-20">
         <div className="mb-6 flex justify-end">
-          <a
-            href={MAIN_SITE_URL}
-            className="inline-flex items-center gap-1.5 text-sm font-medium text-white/70 transition-colors hover:text-white"
-          >
-            <BackArrowIcon />
-            Back to Website
-          </a>
+          <BackToWebsiteLink className="text-white/70 hover:text-white" />
         </div>
         <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-white/60">Step 1 of 2</p>
         <h1 className="mb-2 text-2xl font-bold text-white sm:text-3xl">Tell us about your business</h1>
@@ -116,14 +108,6 @@ function BusinessInfoPage() {
         </Card>
       </div>
     </main>
-  );
-}
-
-function BackArrowIcon() {
-  return (
-    <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" aria-hidden>
-      <path d="M9.5 3.5L4 8l5.5 4.5M4.5 8h8" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
   );
 }
 
