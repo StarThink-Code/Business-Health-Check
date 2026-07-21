@@ -39,7 +39,7 @@ function ReportPage() {
 
   const statusColor = STATUS_COLOR_TOKENS[data.businessStatus];
   const whatsappMessage = encodeURIComponent(
-    `Hi! I'd like to book a consultation about my Business Health Report for ${data.business.name} (score: ${Math.round(data.overallScore)}, ${data.businessStatusLabel}).`,
+    `Hello, I want to schedule an online meeting to discuss the marketing report for my business, ${data.business.name} (score: ${Math.round(data.overallScore)}, ${data.businessStatusLabel}).`,
   );
   const whatsappUrl = `https://wa.me/${CONTACT.whatsappNumber}?text=${whatsappMessage}`;
 
