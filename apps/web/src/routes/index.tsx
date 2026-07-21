@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { buttonClassName } from "@bhc/ui";
 import { ASSESSMENT_CATEGORIES, CATEGORY_LABELS } from "@bhc/shared";
 import { BackToWebsiteLink } from "../components/BackToWebsiteLink";
+import bgAbout from "../assets/bg-about.jpg";
 
 export const Route = createFileRoute("/")({
   component: LandingPage,
@@ -29,23 +30,31 @@ const BENEFITS = [
 function LandingPage() {
   return (
     <main>
-      <section className="page-shell max-w-4xl py-20 sm:py-28">
-        <div className="mb-10 flex justify-end">
-          <BackToWebsiteLink className="text-ink-secondary hover:text-ink" />
-        </div>
-        <p className="eyebrow mb-4">Free digital growth assessment</p>
-        <h1 className="max-w-2xl text-4xl font-bold tracking-tight text-ink sm:text-5xl">
-          See exactly where your business stands — and what to fix next.
-        </h1>
-        <p className="mt-5 max-w-xl text-lg text-ink-secondary">
-          A structured audit of your digital presence, marketing, and growth readiness,
-          scored against real benchmarks — with a personalized report at the end.
-        </p>
-        <div className="mt-9 flex flex-wrap items-center gap-4">
-          <Link to="/assessment/start" className={buttonClassName("primary", "lg")}>
-            Start your free assessment
-          </Link>
-          <span className="text-sm text-ink-muted">No credit card · Takes ~2 minutes</span>
+      <section
+        className="relative bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: `url(${bgAbout})` }}
+      >
+        <div className="absolute inset-0 bg-black/50" />
+        <div className="page-shell relative max-w-4xl py-20 sm:py-28">
+          <div className="mb-10 flex justify-end">
+            <BackToWebsiteLink className="text-white/70 hover:text-white" />
+          </div>
+          <p className="mb-4 text-xs font-semibold uppercase tracking-wider text-white/70">
+            Free digital growth assessment
+          </p>
+          <h1 className="max-w-2xl text-4xl font-bold tracking-tight text-white sm:text-5xl">
+            See exactly where your business stands — and what to fix next.
+          </h1>
+          <p className="mt-5 max-w-xl text-lg text-white/80">
+            A structured audit of your digital presence, marketing, and growth readiness,
+            scored against real benchmarks — with a personalized report at the end.
+          </p>
+          <div className="mt-9 flex flex-wrap items-center gap-4">
+            <Link to="/assessment/start" className={buttonClassName("primary", "lg")}>
+              Start your free assessment
+            </Link>
+            <span className="text-sm text-white/60">No credit card · Takes ~2 minutes</span>
+          </div>
         </div>
       </section>
 
