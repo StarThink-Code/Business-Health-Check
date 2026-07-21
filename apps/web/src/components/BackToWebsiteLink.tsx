@@ -1,5 +1,4 @@
-// StarThink's main site — a separate deployment. Update if it moves to a real domain.
-const MAIN_SITE_URL = "https://website-code-bik.pages.dev";
+const MAIN_SITE_URL = "https://www.starthinkmy.com";
 
 export function BackToWebsiteLink({ className = "" }: { className?: string }) {
   return (
