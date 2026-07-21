@@ -1,7 +1,12 @@
 #:schema node_modules/wrangler/config-schema.json
 name = "bhc-web"
 compatibility_date = "2025-01-01"
+workers_dev = true
 
 [assets]
 directory = "./dist"
 not_found_handling = "single-page-application"
+
+[[routes]]
+pattern = "app.starthinkmy.com"
+custom_domain = true
