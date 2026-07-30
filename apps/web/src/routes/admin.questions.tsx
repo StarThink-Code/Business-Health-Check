@@ -120,7 +120,12 @@ function QuestionForm({
           helpText: question.helpText ?? "",
           sortOrder: question.sortOrder,
           isActive: question.isActive,
-          options: question.options.map((o) => ({ label: o.label, score: o.score, sortOrder: o.sortOrder })),
+          options: question.options.map((o) => ({
+            id: o.id,
+            label: o.label,
+            score: o.score,
+            sortOrder: o.sortOrder,
+          })),
         }
       : {
           categorySlug: categories[0]?.slug ?? "",
@@ -188,6 +193,7 @@ function QuestionForm({
           <div className="space-y-2">
             {fields.map((field, index) => (
               <div key={field.id} className="flex gap-2">
+                <input type="hidden" {...register(`options.${index}.id` as const)} />
                 <input
                   className="input flex-1"
                   placeholder="Label"
